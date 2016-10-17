@@ -1,0 +1,54 @@
+{
+  "name": "NoteFlow",
+  "version": "0.1",
+  "description": "Adds the current selection to NoteFlow notes.",
+  "permissions": [
+    "<all_urls>",
+    "tts",
+    "tabs",
+    "contextMenus"
+  ],
+  
+  "background": {
+    "scripts": [
+      "keycodes.js",
+      "tabs.js",
+      "proxy.js",
+      "db.js",
+      "background.js"
+    ]
+  },
+
+  "browser_action": {
+    "default_icon": "SpeakSel19.png",
+    "default_title": "Speak Selection"
+  },
+
+  "options_page": "options.html",
+
+  "minimum_chrome_version": "14",
+
+  // https://developer.chrome.com/extensions/content_scripts
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "all_frames": true,
+      "js": [
+        "keycodes.js",
+        "db.js",
+        "content_script.js"
+      ]
+    }
+  ],
+
+  "icons": {
+    "16": "SpeakSel16.png",
+    "48": "SpeakSel48.png",
+    "128": "SpeakSel128.png",
+    "256": "SpeakSel256.png"
+  },
+
+  "manifest_version": 2
+}
