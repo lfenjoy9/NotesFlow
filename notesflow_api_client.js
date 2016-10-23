@@ -1,4 +1,4 @@
-function postNoteToRemoteServer(noteInfo, timestamp, url) {
+function postNoteToRemoteServer(noteInfo, timestamp) {
     var noteInfoData = "note=" + noteInfo.note +
     "&sentence=" + encodeURIComponent(noteInfo.sentence) + 
     "&url=" + encodeURIComponent(noteInfo.url) +
