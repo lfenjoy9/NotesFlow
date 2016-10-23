@@ -5,7 +5,7 @@ import json
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://l9mtv@localhost:5432/mynotes'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://l9mtv:mtvl9@localhost:5432/mynotes'
 
 db = SQLAlchemy(app)
 
