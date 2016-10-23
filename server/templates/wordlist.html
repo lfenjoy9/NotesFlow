@@ -1,0 +1,13 @@
+<!doctype html>
+<title>Hello from Flask</title>
+<h3>{{ name }}</h3>
+{% block body %}
+    <table>
+    {% for noteinfo in noteinfos %}
+        <tr>
+        <td><b>{{ noteinfo.note }}</b></td>
+        <td>{{ noteinfo.sentence }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
