@@ -81,6 +81,10 @@ function fake_click(obj) {
   obj.dispatchEvent(event);
 }
 
+var testNotesFlowServer = function(e) {
+  listNotes()
+}
+
 function initBackground() {
   loadContentScriptInAllTabs();
 
@@ -92,6 +96,12 @@ function initBackground() {
     "title": "Export NoteFlow Notes",
     "contexts": ["page", "selection", "image", "link"],
     "onclick" : exportNotesHandler
+  });
+
+  chrome.contextMenus.create({
+    "title": "Test NoteFlow Server",
+    "contexts": ["page", "selection", "image", "link"],
+    "onclick" : testNotesFlowServer
   });
 
   var defaultKeyString = getDefaultKeyString();

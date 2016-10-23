@@ -26,19 +26,22 @@ function initDb() {
 }
 
 function addNote(noteInfo) {
+    var timestamp = new Date().getTime();
+
     db.transaction(function(tx) {
         tx.executeSql("INSERT INTO `Notes` (`Note`, `Sentence`, `Offset`, `URL`, `Timestamp`) values(?, ?, ?, ?, ?)",
-        [noteInfo.note, noteInfo.sentence, noteInfo.offset, noteInfo.url, new Date().getTime()],
+        [noteInfo.note, noteInfo.sentence, noteInfo.offset, noteInfo.url, timestamp],
         function(){
             console.log(noteInfo.note + " is added.");
         },
         null
         );
     });
+
+    postNoteToRemoteServer(noteInfo, timestamp);
 }
 
 var csv = "";
-
 
 function exportNotes(processFunc) {
     console.log("export notes");

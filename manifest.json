@@ -15,7 +15,9 @@
       "tabs.js",
       "proxy.js",
       "db.js",
-      "background.js"
+      "jquery.min.js",
+      "background.js",
+      "notesflow_api_client.js"
     ]
   },
 
@@ -36,9 +38,10 @@
       ],
       "all_frames": true,
       "js": [
-        "keycodes.js",
+        "content_script.js",
         "db.js",
-        "content_script.js"
+        "jquery.min.js",
+        "keycodes.js"
       ]
     }
   ],
