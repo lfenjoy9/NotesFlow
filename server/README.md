@@ -16,21 +16,31 @@
 # http://flask.pocoo.org/docs/0.11/installation/
 # http://stackoverflow.com/questions/7023052/flask-configure-dev-server-to-be-visible-across-the-network
 
-# http://www.saintsjd.com/2014/08/13/howto-install-postgis-on-ubuntu-trusty.html
-# psql -h localhost -U l9mtv mynotes
+# Postgre DB
+
+psql -h localhost -U l9mtv mynotes
+http://www.saintsjd.com/2014/08/13/howto-install-postgis-on-ubuntu-trusty.html
+
+DROP TABLE mynotes;
 
 # https://www.howtoinstall.co/en/ubuntu/trusty/python-flask-sqlalchemy
 # http://stackoverflow.com/questions/11583714/install-psycopg2-on-ubuntu
 
-# http://docs.gunicorn.org/en/stable/install.html
-# gunicorn helloworld:app -b 0.0.0.0:8000 --daemon
 
 # ec2-35-160-132-194.us-west-2.compute.amazonaws.com
 # 35.160.132.194:8000
 
+# gunicorn
+
+gunicorn helloworld:app -b 0.0.0.0:8000 --daemon
+http://docs.gunicorn.org/en/stable/install.html
+
+ps ax|grep gunicorn
+
 # Test
 
 curl -i http://localhost:5000/notes/list
+curl -i http://35.160.132.194:8000/notes/list
 
 curl -i http://localhost:5000/notes/3
 

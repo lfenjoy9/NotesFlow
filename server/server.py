@@ -1,7 +1,9 @@
 from db import Note
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask import render_template
 import json
+import time
 
 app = Flask(__name__)
 
@@ -55,6 +57,15 @@ def show_note(note_id):
 # sessions/create (type)
 # sessions/list
 # sessions/:session_id/ 
+
+@app.route('/wordlist/day/<string:day>')
+def list_word_by_day(day):
+    # get the timestamp of the input day, i.e. "2016-10-23"
+    ts_of_day = time.mktime(time.strptime(day, '%Y-%m-%d')) * 1000
+
+    noteinfos = Note.query.filter(Note.timestamp>ts_of_day)
+
+    return render_template('wordlist.html', name=day, noteinfos=noteinfos)
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')
