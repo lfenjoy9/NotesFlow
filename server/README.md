@@ -40,6 +40,7 @@ ps ax|grep gunicorn
 # Test
 
 curl -i http://localhost:5000/notes/list
+curl -i http://35.160.132.194:8000/notes/list
 
 curl -i http://localhost:5000/notes/3
 
