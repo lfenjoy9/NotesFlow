@@ -32,7 +32,7 @@ DROP TABLE mynotes;
 
 # gunicorn
 
-gunicorn helloworld:app -b 0.0.0.0:8000 --daemon
+gunicorn server:app -b 0.0.0.0:8000 --daemon
 http://docs.gunicorn.org/en/stable/install.html
 
 ps ax|grep gunicorn
