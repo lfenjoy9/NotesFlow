@@ -56,6 +56,10 @@ curl -i -X POST -H "application/x-www-form-urlencoded" http://localhost:5000/wor
 
 curl -i http://localhost:5000/words/test
 
+## Word List
+
+http://localhost:5000/wordlist/day/2016-10-01 (Y-M-D)
+
 # URL Encoding
 
 decodeURIComponent()
