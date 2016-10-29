@@ -39,6 +39,7 @@ function addNote(noteInfo) {
     });
 
     postNoteToRemoteServer(noteInfo, timestamp);
+    lookupWord(noteInfo.note);
 }
 
 var csv = "";

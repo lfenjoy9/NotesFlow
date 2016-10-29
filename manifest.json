@@ -17,7 +17,8 @@
       "db.js",
       "jquery.min.js",
       "background.js",
-      "notesflow_api_client.js"
+      "notesflow_api_client.js",
+      "webster_api_client.js"
     ]
   },
 
