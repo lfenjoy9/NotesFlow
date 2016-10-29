@@ -1,4 +1,5 @@
 from db import Note
+from db import Word
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask import render_template
@@ -7,7 +8,7 @@ import time
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://l9mtv:mtvl9@localhost:5432/mynotes'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://l9mtv@localhost:5432/mynotes'
 
 db = SQLAlchemy(app)
 
@@ -66,6 +67,26 @@ def list_word_by_day(day):
     noteinfos = Note.query.filter(Note.timestamp>ts_of_day)
 
     return render_template('wordlist.html', name=day, noteinfos=noteinfos)
+
+@app.route('/words/create', methods=['POST'])
+def create_word():
+    if request.method == 'POST':
+        word = request.form.get('word')
+        wav = request.form.get('wav')
+        if word == None or wav == None:
+            return jsonify(status=1)
+        else:
+            db.session.add(Word(word, wav))
+            db.session.commit()
+            return jsonify(status=0)
+
+@app.route('/words/<string:word>')
+def show_word(word):
+    wordinfo = Word.query.filter(Word.word==word).first()
+    if wordinfo == None:
+        return jsonify(status=1)
+    else:
+        return jsonify(status=0, wordinfo=wordinfo.serialize())
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0')

@@ -37,3 +37,21 @@ class Note(db.Model):
             'term': self.term,
         }
 
+class Word(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    word = db.Column(db.String())
+    wav = db.Column(db.String())
+
+    def __init__(self, word, wav):
+        self.word = word
+        self.wav = wav
+
+    def __repr__(self):
+        return '<Note %d %s %s>' % (self.id, self.word, self.wav)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'word': self.word,
+            'wav': self.wav,
+        }

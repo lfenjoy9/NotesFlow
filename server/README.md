@@ -39,6 +39,8 @@ ps ax|grep gunicorn
 
 # Test
 
+## Note
+
 curl -i http://localhost:5000/notes/list
 curl -i http://35.160.132.194:8000/notes/list
 
@@ -46,6 +48,13 @@ curl -i http://localhost:5000/notes/3
 
 curl -i -X POST -H "application/x-www-form-urlencoded" http://localhost:5000/notes/create \
   -d 'note=Import&sentence=Import&url=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FWeb%2FJavaScript%2FReference%2FGlobal_Objects%2FencodeURIComponentl&offset=100&timestamp=100'
+
+## word
+
+curl -i -X POST -H "application/x-www-form-urlencoded" http://localhost:5000/words/create \
+  -d 'word=test&wav=wav'
+
+curl -i http://localhost:5000/words/test
 
 # URL Encoding
 
