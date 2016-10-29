@@ -15,7 +15,7 @@ if (localStorage['lastVersionUsed'] != '1') {
   });
 }
 
-function speak(utterance) {  
+function speak(utterance) { 
   if (speaking && utterance == lastUtterance) {
     chrome.tts.stop();
     return;
@@ -117,7 +117,7 @@ function initBackground() {
         if (request['init']) {
           sendResponse({'key': localStorage['speakKey']});
         } else if (request['speak']) {
-          speak(request['speak']);
+          // speak(request['speak']);
         }
       });
 
