@@ -8,8 +8,8 @@ function postNoteToRemoteServer(noteInfo, timestamp) {
 
     $.ajax({
         type: "POST",
-        // url: "http://127.0.0.1:5000/notes/create",
-        url: "http://35.160.132.194:8000/notes/create",        
+        url: "http://127.0.0.1:5000/notes/create",
+        // url: "http://35.160.132.194:8000/notes/create",        
         data: noteInfoData,
         success: function(data) {
             console.log(data);
@@ -21,8 +21,8 @@ function postNoteToRemoteServer(noteInfo, timestamp) {
 function listNotes() {
     $.ajax({
     type: "GET",
-    // url: "http://127.0.0.1:5000/notes/list",
-    url: "http://35.160.132.194:8000/notes/list",
+    url: "http://127.0.0.1:5000/notes/list",
+    // url: "http://35.160.132.194:8000/notes/list",
     success: function(data) {
         console.log(data);
         var noteinfos = JSON.parse(data)
@@ -35,8 +35,8 @@ function listNotes() {
 function showNote(noteId) {
     $.ajax({
     type: "GET",
-    // url: "http://127.0.0.1:5000/notes/" + noteId,
-    url: "http://35.160.132.194:8000/notes/" + noteId,
+    url: "http://127.0.0.1:5000/notes/" + noteId,
+    // url: "http://35.160.132.194:8000/notes/" + noteId,
     success: function(data) {
         console.log(data);
     },
