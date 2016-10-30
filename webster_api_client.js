@@ -15,6 +15,7 @@ function lookupWord(noteinfo, fn) {
         url: url,
         dataType: "xml",
         success: function(data) {
+            console.log(data);
             var entryIdHasSound;
             var wav;
             console.log(data);
