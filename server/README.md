@@ -64,3 +64,7 @@ http://localhost:5000/wordlist/day/2016-10-01 (Y-M-D)
 
 decodeURIComponent()
 encodeURIComponent()
+
+# Webseter
+
+http://www.dictionaryapi.com/api/v1/references/learners/xml/{}?key=41d675dd-c2a7-46db-b71b-d572c8e2ae7d
