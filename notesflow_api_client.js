@@ -1,3 +1,6 @@
+// var notesFlowApiUrl = "http://35.160.132.194:8000"; // prod
+var notesFlowApiUrl = "http://127.0.0.1:5000/"; // dev
+
 function postNoteToRemoteServer(noteInfo) {
     var noteInfoData = "note=" + noteInfo.note +
     "&sentence=" + encodeURIComponent(noteInfo.sentence) + 
@@ -9,8 +12,7 @@ function postNoteToRemoteServer(noteInfo) {
 
     $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:5000/notes/create",
-        // url: "http://35.160.132.194:8000/notes/create",        
+        url: notesFlowApiUrl + "notes/create",
         data: noteInfoData,
         success: function(data) {
             postWordToRemoteServer(noteInfo);
@@ -25,8 +27,7 @@ function postWordToRemoteServer(noteInfo) {
     "&wav=" + noteInfo.sound;
     $.ajax({
         type: "POST",
-        url: "http://127.0.0.1:5000/words/create",
-        // url: "http://35.160.132.194:8000/words/create",        
+        url: notesFlowApiUrl + "words/create",     
         data: data,
         success: function(data) {
             console.log(data);
@@ -37,8 +38,7 @@ function postWordToRemoteServer(noteInfo) {
 function listNotes() {
     $.ajax({
     type: "GET",
-    url: "http://127.0.0.1:5000/notes/list",
-    // url: "http://35.160.132.194:8000/notes/list",
+    url: notesFlowApiUrl + "notes/list",
     success: function(data) {
         console.log(data);
         var noteinfos = JSON.parse(data)
@@ -51,8 +51,7 @@ function listNotes() {
 function showNote(noteId) {
     $.ajax({
     type: "GET",
-    url: "http://127.0.0.1:5000/notes/" + noteId,
-    // url: "http://35.160.132.194:8000/notes/" + noteId,
+    url: notesFlowApiUrl + "notes/" + noteId,
     success: function(data) {
         console.log(data);
     },
