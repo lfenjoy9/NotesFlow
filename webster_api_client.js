@@ -3,7 +3,7 @@ function lookupWord(noteinfo, fn) {
     noteinfo["term"] = "";
     noteinfo["sound"] = "";
     if (noteinfo.note.split(" ").length > 1) {
-        // Multiple words
+        // Contains multiple words.
         fn(noteinfo);
         return;
     }
@@ -55,6 +55,6 @@ function lookupWord(noteinfo, fn) {
 function playSound(wavFilename) {
     var url = "http://media.merriam-webster.com/soundc11/";
     url += wavFilename[0] + "/" + wavFilename;
-    var pr = new Audio(url);
-    pr.play();
+    var audio = new Audio(url);
+    audio.play();
 }
