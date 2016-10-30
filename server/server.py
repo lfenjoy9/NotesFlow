@@ -65,8 +65,11 @@ def list_word_by_day(day):
     ts_of_day = time.mktime(time.strptime(day, '%Y-%m-%d')) * 1000
 
     noteinfos = Note.query.filter(Note.timestamp>ts_of_day)
-
-    return render_template('wordlist.html', name=day, noteinfos=noteinfos)
+    wordinfos = []
+    for noteinfo in noteinfos:
+        wordinfo = Word.query.filter(Word.word==noteinfo.term).first()
+        wordinfos.append(wordinfo)
+    return render_template('wordlist.html', name=day, noteinfos=noteinfos, wordinfos=wordinfos)
 
 @app.route('/words/create', methods=['POST'])
 def create_word():
