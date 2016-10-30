@@ -1,10 +1,5 @@
 # http://flask-sqlalchemy.pocoo.org/2.1/quickstart/
 # create_all()
-# \list List Database
-# \dt
-# CREATE DATABASE testdb1;
-# \d note Describe 
-# \d db_name Use database
 # db.session.add(Note('note1', 'sentence1', 0, 'url1', 1, "term1"))
 # db.session.add(Note('note2', 'sentence2', 0, 'url2', 2, "term2"))
 # db.session.commit()
@@ -21,6 +16,13 @@
 psql -h localhost -U l9mtv mynotes
 http://www.saintsjd.com/2014/08/13/howto-install-postgis-on-ubuntu-trusty.html
 
+
+\list List Database
+\dt
+\d note Describe 
+
+\c db_name Use database
+CREATE DATABASE testdb1;
 DROP TABLE mynotes;
 
 # https://www.howtoinstall.co/en/ubuntu/trusty/python-flask-sqlalchemy
@@ -29,13 +31,6 @@ DROP TABLE mynotes;
 
 # ec2-35-160-132-194.us-west-2.compute.amazonaws.com
 # 35.160.132.194:8000
-
-# gunicorn
-
-gunicorn server:app -b 0.0.0.0:8000 --daemon
-http://docs.gunicorn.org/en/stable/install.html
-
-ps ax|grep gunicorn
 
 # Test
 
@@ -77,3 +72,9 @@ export NOTES_FLOW_SERVER_SETTINGS=dev_settings.config
 ## prod
 export NOTES_FLOW_SERVER_SETTINGS=prod_settings.config
 
+# gunicorn
+
+gunicorn server:app -b 0.0.0.0:8000 --daemon
+http://docs.gunicorn.org/en/stable/install.html
+
+ps ax|grep gunicorn
