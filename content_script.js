@@ -20,7 +20,7 @@ function getNoteInfo() {
     endOffset++;
   }
   var offset = range.startOffset - startOffset;
-  return { note: sel.toString(), sentence: text.substring(startOffset, endOffset), offset: offset, url: window.location.href };
+  return { note: sel.toString().trim(), sentence: text.substring(startOffset, endOffset), offset: offset, url: window.location.href };
 }
 
 function speakSelection() {
