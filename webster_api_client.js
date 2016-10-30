@@ -1,6 +1,14 @@
 // lookup the word and return entry word and wave file
-function lookupWord(word) {
-    var url = "http://www.dictionaryapi.com/api/v1/references/learners/xml/" + word;
+function lookupWord(noteinfo, fn) {
+    noteinfo["term"] = "";
+    noteinfo["sound"] = "";
+    if (noteinfo.note.split(" ").length > 1) {
+        // Multiple words
+        fn(noteinfo);
+        return;
+    }
+
+    var url = "http://www.dictionaryapi.com/api/v1/references/learners/xml/" + noteinfo.note;
     url += "?key=41d675dd-c2a7-46db-b71b-d572c8e2ae7d";
 
     $.ajax({
@@ -13,6 +21,8 @@ function lookupWord(word) {
             var entry_list = $(data).find("entry_list")
             var entries = entry_list.find("entry")
             if (entries.length === 0) {
+                // Not found
+                fn(noteinfo);
                 return;
             }
             entries.each(function() {
@@ -30,9 +40,14 @@ function lookupWord(word) {
             });
             if (entryIdHasSound) {
                 var entryWord = entryIdHasSound.replace(/[0-9]|\[|\]/g, "");
-                console.log(entryWord + "," + wav);
+                console.log(entryWord + "," + wav);                
+                noteinfo["term"] = entryWord;
+                noteinfo["sound"] = wav;
                 playSound(wav);
+            } else {
+                // TODO: Get the word of the first entry.
             }
+            fn(noteinfo);
         },
     });
 }

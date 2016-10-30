@@ -38,8 +38,10 @@ function addNote(noteInfo) {
         );
     });
 
-    postNoteToRemoteServer(noteInfo, timestamp);
-    lookupWord(noteInfo.note);
+    noteInfo["timestamp"] = timestamp;
+
+    // Lookup the word and then post the note to server.
+    lookupWord(noteInfo, postNoteToRemoteServer);
 }
 
 var csv = "";
