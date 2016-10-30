@@ -1,5 +1,5 @@
-// var notesFlowApiUrl = "http://35.160.132.194:8000"; // prod
-var notesFlowApiUrl = "http://127.0.0.1:5000/"; // dev
+var notesFlowApiUrl = "http://35.160.132.194:8000/"; // prod
+// var notesFlowApiUrl = "http://127.0.0.1:5000/"; // dev
 
 function postNoteToRemoteServer(noteInfo) {
     var noteInfoData = "note=" + noteInfo.note +
