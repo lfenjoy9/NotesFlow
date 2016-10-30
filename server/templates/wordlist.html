@@ -1,6 +1,7 @@
 <!doctype html>
-<title>Hello from Flask</title>
-<h3>{{ name }}</h3>
+{% block script %}
+<script type="text/javascript" src="{{ url_for('static', filename='vue.js') }}">
+</script>
 <script type="text/javascript">
     function playSound(wavFilename) {
         var url = "http://media.merriam-webster.com/soundc11/";
@@ -9,14 +10,29 @@
         audio.play();
     }
 </script>
-{% block body %}
-    <table>        
-    {% for x in range(0, wordinfos|length) %}
-        <tr>
-        <td><b>{{ noteinfos[x].note }}</b></td>
-        <td onclick="playSound('{{wordinfos[x].wav}}')">{{wordinfos[x].word}}</td>
-        <td>{{ noteinfos[x].sentence }}</td>
-        </tr>
-    {% endfor %}
-    </table>
 {% endblock %}
+{% block body %}
+<title>Hello from Flask</title>
+<h3>{{ name }}</h3>
+<div id="app">
+  <p>${message}</p>
+</div>
+<table>        
+{% for x in range(0, wordinfos|length) %}
+    <tr>
+    <td><b>{{ noteinfos[x].note }}</b></td>
+    <td onclick="playSound('{{wordinfos[x].wav}}')">{{wordinfos[x].word}}</td>
+    <td>{{ noteinfos[x].sentence }}</td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}
+<script type="text/javascript">
+    new Vue({
+        delimiters: ['${', '}'],
+        el: '#app',
+        data: {
+            message: 'Hello Vue.js!'
+        }
+    });
+</script>
