@@ -68,3 +68,12 @@ encodeURIComponent()
 # Webseter
 
 http://www.dictionaryapi.com/api/v1/references/learners/xml/{}?key=41d675dd-c2a7-46db-b71b-d572c8e2ae7d
+
+# Config
+
+## dev
+export NOTES_FLOW_SERVER_SETTINGS=dev_settings.config
+
+## prod
+export NOTES_FLOW_SERVER_SETTINGS=prod_settings.config
+

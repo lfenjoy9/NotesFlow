@@ -2,7 +2,8 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://l9mtv:mtvl9@localhost:5432/mynotes'
+app.config.from_envvar('NOTES_FLOW_SERVER_SETTINGS')
+
 db = SQLAlchemy(app)
 
 # id, note, sentence, offset, url, timestamp, term

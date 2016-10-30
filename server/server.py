@@ -7,8 +7,7 @@ import json
 import time
 
 app = Flask(__name__)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://l9mtv@localhost:5432/mynotes'
+app.config.from_envvar('NOTES_FLOW_SERVER_SETTINGS')
 
 db = SQLAlchemy(app)
 
