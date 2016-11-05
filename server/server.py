@@ -37,6 +37,20 @@ def create_note():
             db.session.commit()
             return jsonify(status=0)
 
+@app.route('/notes/update', methods=['POST'])
+def update_note():
+    if request.method == 'POST':
+        noteId = request.form.get('id')
+        # Add more fields to update.
+        term = request.form.get('term')
+        if noteId == None or term == None:
+            print "Missing noteId or term"
+            return jsonify(status=1)
+        else:
+            db.session.query(Note).filter(Note.id == noteId).update({Note.term:term})
+            db.session.commit()
+            return jsonify(status=0)
+
 @app.route('/notes/list')
 def list_notes():
     notes = Note.query.all()
@@ -79,7 +93,8 @@ def create_word():
             return jsonify(status=1)
         else:
             db.session.add(Word(word, wav))
-            db.session.commit()
+            rc = db.session.commit()
+            print rc
             return jsonify(status=0)
 
 @app.route('/words/<string:word>')

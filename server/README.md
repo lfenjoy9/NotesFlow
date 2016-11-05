@@ -16,7 +16,6 @@
 psql -h localhost -U l9mtv mynotes
 http://www.saintsjd.com/2014/08/13/howto-install-postgis-on-ubuntu-trusty.html
 
-
 \list List Database
 \dt
 \d note Describe 
@@ -44,6 +43,9 @@ curl -i http://localhost:5000/notes/3
 curl -i -X POST -H "application/x-www-form-urlencoded" http://localhost:5000/notes/create \
   -d 'note=Import&sentence=Import&url=https%3A%2F%2Fdeveloper.mozilla.org%2Fen-US%2Fdocs%2FWeb%2FJavaScript%2FReference%2FGlobal_Objects%2FencodeURIComponentl&offset=100&timestamp=100'
 
+curl -i -X POST -H "application/x-www-form-urlencoded" http://localhost:5000/notes/update \
+  -d 'noteid=10&term=test'
+
 ## word
 
 curl -i -X POST -H "application/x-www-form-urlencoded" http://localhost:5000/words/create \
@@ -54,6 +56,7 @@ curl -i http://localhost:5000/words/test
 ## Word List
 
 http://localhost:5000/wordlist/day/2016-10-01 (Y-M-D)
+http://35.160.132.194:8000/wordlist/day/2016-10-01
 
 # URL Encoding
 
