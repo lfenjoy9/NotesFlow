@@ -1,6 +1,9 @@
 <!doctype html>
+
 {% block script %}
 <script type="text/javascript" src="{{ url_for('static', filename='vue.js') }}">
+</script>
+<script type="text/javascript" src="{{ url_for('static', filename='jquery-2.2.4.min.js') }}">
 </script>
 <script type="text/javascript">
     function playSound(wavFilename) {
@@ -8,6 +11,13 @@
         url += wavFilename[0] + "/" + wavFilename;
         var audio = new Audio(url);
         audio.play();
+    }
+    function boldAllNotes() {
+        $("#wordlists").children(":first").children().each(function () {
+            var note = $(this).children().eq(0).text();
+            var sentenceElement = $(this).children().eq(2);
+            sentenceElement.html(sentenceElement.text().replace(note, "<b>" + note + "</b>"));
+        });
     }
 </script>
 {% endblock %}
@@ -17,7 +27,7 @@
 <div id="app">
   <p>${message}</p>
 </div>
-<table>        
+<table id="wordlists">        
 {% for x in range(0, wordinfos|length) %}
     <tr>
     <td><b>{{ noteinfos[x].note }}</b></td>
@@ -34,5 +44,9 @@
         data: {
             message: 'Hello Vue.js!'
         }
+    });
+
+    $(document).ready(function() {
+        boldAllNotes();
     });
 </script>
