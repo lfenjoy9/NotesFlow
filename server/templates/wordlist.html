@@ -14,14 +14,25 @@
         var audio = new Audio(url);
         audio.play();
     }
+
     function lookup(noteid, note) {
         console.log(noteid + "," + note);
         lookupWord({note: note}, function(noteinfo) {
-            console.log(noteinfo);
-            updateNoteToRemoteServer({id: noteid, term: noteinfo["term"]});
-            postWordToRemoteServer({term: noteinfo["term"], sound: noteinfo["sound"]});
+            // noteinfo = {term, sound}
+            updateNoteToRemoteServer({id: noteid, term: noteinfo.term});
+            postWordToRemoteServer({term: noteinfo.term, sound: noteinfo.sound});
+            setWordAndSoundOfNote(noteid, noteinfo.term, noteinfo.sound);
         });
     }
+
+    function setWordAndSoundOfNote(noteId, word, sound) {
+        var wordElement = $("#"+noteId).children().eq(1);
+        wordElement.text(word);
+        wordElement.click(function(){
+            playSound(sound);
+        }); 
+    }
+
     function boldAllNotes() {
         $("#wordlists").children(":first").children().each(function () {
             var note = $(this).children().eq(0).text();
@@ -39,11 +50,11 @@
 </div>
 <table id="wordlists">        
 {% for x in range(0, wordinfos|length) %}
-    <tr>
-    <td><b>{{ noteinfos[x].note }}</b></td>
-    <td onclick="playSound('{{ wordinfos[x].wav }}')">{{wordinfos[x].word}}</td>
-    <td onclick="lookup({{ noteinfos[x].id }}, '{{ noteinfos[x].note }}')">Lookup</td>
-    <td>{{ noteinfos[x].sentence }}</td>
+    <tr id = "{{ noteinfos[x].id }}">
+        <td><b>{{ noteinfos[x].note }}</b></td>
+        <td onclick="playSound('{{ wordinfos[x].wav }}')">{{wordinfos[x].word}}</td>
+        <td onclick="lookup({{ noteinfos[x].id }}, '{{ noteinfos[x].note }}')">Lookup</td>
+        <td>{{ noteinfos[x].sentence }}</td>
     </tr>
 {% endfor %}
 </table>
