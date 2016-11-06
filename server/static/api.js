@@ -43,16 +43,13 @@ function lookupWord(noteinfo, fn) {
     });
 }
 
-// var notesFlowApiUrl = "http://35.160.132.194:8000/"; // prod
-var notesFlowApiUrl = "http://127.0.0.1:5000/"; // dev
-
 // {id: <id>, term: <term>}
 function updateNoteToRemoteServer(noteInfo) {
     var data = "id=" + noteInfo.id + "&term=" + noteInfo.term;
     console.log(data);
     $.ajax({
         type: "POST",
-        url: notesFlowApiUrl + "notes/update",
+        url: getApiRootUrl() + "notes/update",
         data: data,
         success: function(data) {
             console.log(data);
@@ -66,10 +63,18 @@ function postWordToRemoteServer(wordInfo) {
     console.log(data);
     $.ajax({
         type: "POST",
-        url: notesFlowApiUrl + "words/create",     
+        url: getApiRootUrl() + "words/create",     
         data: data,
         success: function(data) {
             console.log(data);
         },
     });
+}
+
+function getApiRootUrl() {
+    var apiRootUrl = window.location.protocol + "//" + 
+        window.location.hostname + ":" + 
+        window.location.port + "/";
+    console.log("apiRootUrl=" + apiRootUrl);
+    return apiRootUrl;
 }
