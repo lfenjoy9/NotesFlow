@@ -1,4 +1,5 @@
 var db;
+
 function initDb() {
     console.log("init WordFlow db");
     db = openDatabase("WordFlow", "0.1", "Database for WordFlow", 200000);
@@ -41,7 +42,7 @@ function addNote(noteInfo) {
     noteInfo["timestamp"] = timestamp;
 
     // Lookup the word and then post the note to server.
-    lookupWord(noteInfo, postNoteToRemoteServer);
+    lookupWord(noteInfo, postNoteIntoToNotesServer);
 }
 
 var csv = "";
