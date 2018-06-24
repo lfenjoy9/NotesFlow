@@ -1,7 +1,7 @@
 {
   "name": "NoteFlow",
   "version": "0.1",
-  "description": "Adds the current selection to NoteFlow notes.",
+  "description": "Adds the current selection to NoteFlow server.",
   "permissions": [
     "<all_urls>",
     "tts",
@@ -24,14 +24,13 @@
 
   "browser_action": {
     "default_icon": "SpeakSel19.png",
-    "default_title": "Speak Selection"
+    "default_title": "Add Selection"
   },
 
   "options_page": "options.html",
 
   "minimum_chrome_version": "14",
 
-  // https://developer.chrome.com/extensions/content_scripts
   "content_scripts": [
     {
       "matches": [
