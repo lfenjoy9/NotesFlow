@@ -70,8 +70,7 @@ function speakSelection() {
   var noteInfo = getNoteInfoInInputArea();
   console.log(noteInfo)
   chrome.extension.sendRequest({'speak': noteInfo.note});
-  // Add note info.
-  // chrome.extension.sendMessage({method: "add", noteInfo: noteInfo});
+  chrome.extension.sendMessage({method: "add", noteInfo: noteInfo});
 }
 
 function onExtensionMessage(request) {
@@ -88,6 +87,10 @@ function onExtensionMessage(request) {
 function initContentScript() {
   chrome.extension.onRequest.addListener(onExtensionMessage);
   chrome.extension.sendRequest({'init': true}, onExtensionMessage);
+
+  document.body.addEventListener('dblclick',function(evt){
+    speakSelection();
+  }, false);
 
   document.addEventListener('keydown', function(evt) {
     if (!document.hasFocus()) {
