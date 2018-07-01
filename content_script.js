@@ -6,7 +6,11 @@
 
 var speakKeyStr;
 
-// Returns NoteInfo (Note, Sentence, Offset, URL)
+// Returns NoteInfo 
+// - note, 
+// - sentence
+// - offset, 
+// - url
 function getNoteInfo() {
   var sel = window.getSelection();
   var range = sel.getRangeAt(0);
@@ -20,16 +24,42 @@ function getNoteInfo() {
     endOffset++;
   }
   var offset = range.startOffset - startOffset;
-  return { note: sel.toString().trim(), sentence: text.substring(startOffset, endOffset), offset: offset, url: window.location.href };
+  return { 
+    note: sel.toString().trim(), 
+    sentence: text.substring(startOffset, endOffset), 
+    offset: offset, 
+    url: window.location.href
+  };
+}
+
+// https://www.jspell.com/public-spell-checker.html
+function getNoteInfoInInputArea() {
+  var text = document.getElementById("pagetext");
+  var textContent = text.value;
+  var note = textContent.substr(text.selectionStart, text.selectionEnd - text.selectionStart);
+  var startOffset = text.selectionStart;
+  for (; startOffset > 0 && textContent.charAt(startOffset - 1) != '.'; --startOffset);
+  for (; textContent.charAt(startOffset) == ' '; ++startOffset);
+  var endOffset = text.selectionEnd;
+  for (; endOffset < textContent.length && textContent.charAt(endOffset) != '.'; ++endOffset);
+  var offset = text.selectionStart - startOffset;
+  console.log('[' + startOffset + "," + endOffset + ']')
+  return { 
+      note: note, 
+      sentence: textContent.substr(startOffset, endOffset + 1), 
+      offset: offset, 
+      url: '' 
+  }; 
 }
 
 function speakSelection() {
+  // Speak the selected text.
   var focused = document.activeElement;
   var selectedText;
   if (focused) {
     try {
       selectedText = focused.value.substring(
-          focused.selectionStart, focused.selectionEnd);
+      focused.selectionStart, focused.selectionEnd);
     } catch (err) {
     }
   }
@@ -37,12 +67,11 @@ function speakSelection() {
     var sel = window.getSelection();
     var selectedText = sel.toString();
   }
-
+  var noteInfo = getNoteInfoInInputArea();
+  console.log(noteInfo)
+  chrome.extension.sendRequest({'speak': noteInfo.note});
   // Add note info.
-  var noteInfo = getNoteInfo();
-  chrome.extension.sendMessage({method: "add", noteInfo: noteInfo});
-
-  chrome.extension.sendRequest({'speak': selectedText});
+  // chrome.extension.sendMessage({method: "add", noteInfo: noteInfo});
 }
 
 function onExtensionMessage(request) {
