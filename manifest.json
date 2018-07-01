@@ -1,12 +1,10 @@
 {
   "name": "NoteFlow",
-  "version": "0.1",
+  "version": "0.12",
   "description": "Adds the current selection to NoteFlow server.",
   "permissions": [
-    "<all_urls>",
-    "tts",
-    "tabs",
-    "contextMenus"
+    "contextMenus",
+    "tabs"
   ],
   
   "background": {
