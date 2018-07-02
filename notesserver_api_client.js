@@ -1,3 +1,5 @@
+var notesFlowServer = "http://127.0.0.1:5000"; 
+
 /**
  * Posts noteInfo to Notes Server.
  * @param {*} noteInfo 
@@ -9,8 +11,8 @@
  *  timestamp
  *  url
  */
-function postNoteIntoToNotesServer(noteInfo) {
-    noteInfoDict = {
+function postNoteInfoToNotesServer(noteInfo) {
+    var noteInfoDict = {
         "note": "",
         "term": noteInfo.term,
         "sound": noteInfo.sound,
@@ -18,7 +20,15 @@ function postNoteIntoToNotesServer(noteInfo) {
         "offset": noteInfo.offset,
         "timesamp": noteInfo.timesamp,
         "url": noteInfo.url
-    }
-    console.log(JSON.stringify(noteInfoDict))
-    // TODO: Post nottInfoDict.
+    };
+    var data = JSON.stringify(noteInfoDict);
+    console.log(data);
+    $.ajax({
+        type: "POST",
+        url: notesFlowServer + "/notes/0",
+        data: data,
+        success: function(response) {
+            console.log(response);
+        },
+    });
 }

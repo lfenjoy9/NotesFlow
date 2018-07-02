@@ -42,7 +42,7 @@ function addNote(noteInfo) {
     noteInfo["timestamp"] = timestamp;
 
     // Lookup the word and then post the note to server.
-    lookupWord(noteInfo, postNoteIntoToNotesServer);
+    lookupWord(noteInfo, postNoteInfoToNotesServer);
 }
 
 var csv = "";
