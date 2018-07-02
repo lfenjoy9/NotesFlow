@@ -6,6 +6,26 @@
 
 var speakKeyStr;
 
+function isSpaceCharacter(c) {
+  return c == ' ' || c == '\n' || c == '\t';
+}
+
+function extractNotInfo(text, selectionStart, selectionEnd) {
+  var note = text.substr(selectionStart, selectionEnd - selectionStart);
+  var startOffset = selectionStart;
+  for (; startOffset > 0 && text.charAt(startOffset - 1) != '.'; --startOffset);
+  for (; isSpaceCharacter(text.charAt(startOffset)); ++startOffset);
+  var endOffset = selectionEnd;
+  for (; endOffset < text.length && text.charAt(endOffset) != '.'; ++endOffset);
+  var offset = selectionStart - startOffset;
+  return { 
+      note: note, 
+      sentence: text.substr(startOffset, endOffset + 1), 
+      offset: offset, 
+      url: '' 
+  }; 
+}
+
 // Returns NoteInfo 
 // - note, 
 // - sentence
@@ -35,21 +55,7 @@ function getNoteInfo() {
 // https://www.jspell.com/public-spell-checker.html
 function getNoteInfoInInputArea() {
   var text = document.getElementById("pagetext");
-  var textContent = text.value;
-  var note = textContent.substr(text.selectionStart, text.selectionEnd - text.selectionStart);
-  var startOffset = text.selectionStart;
-  for (; startOffset > 0 && textContent.charAt(startOffset - 1) != '.'; --startOffset);
-  for (; textContent.charAt(startOffset) == ' '; ++startOffset);
-  var endOffset = text.selectionEnd;
-  for (; endOffset < textContent.length && textContent.charAt(endOffset) != '.'; ++endOffset);
-  var offset = text.selectionStart - startOffset;
-  console.log('[' + startOffset + "," + endOffset + ']')
-  return { 
-      note: note, 
-      sentence: textContent.substr(startOffset, endOffset + 1), 
-      offset: offset, 
-      url: '' 
-  }; 
+  return extractNotInfo(text.value, text.selectionStart, text.selectionEnd);
 }
 
 function speakSelection() {
