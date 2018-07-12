@@ -4,7 +4,6 @@ chrome.extension.onMessage.addListener(
         if (request.method == "export") {
             exportNotes();
         } else if (request.method == "add") {
-            console.log("add " + request.noteInfo.note + ", " + request.noteInfo.sentence);
             addNote(request.noteInfo);
         }
     }
