@@ -17,12 +17,14 @@ db = Db()
 
 class Note(Resource):
 
-    def put(self, note_id):
-        db.insert_note(loads(request.form['data']))
+    def post(self, note_id):
+        note = request.get_json()
+        print(note)
+        db.insert_note(note)
         return {'status': 'ok'}
     
     def get(self, note_id):
-        # Do nothing.
+        # Do nothing.   
         return {'status': 'ok'}
 
 class Session(Resource):
