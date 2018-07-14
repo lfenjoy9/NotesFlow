@@ -5,10 +5,12 @@
 
 ## Insert note 
 
-curl http://localhost:5000/note/note_id -d "data={\"note\": \"foo\", \"word\": \"foo\"}" -X PUT
-curl http://localhost:5000/note/note_id -d "data={\"note\": \"bar\", \"word\": \"bar\"}" -X PUT
-curl http://localhost:5000/note/note_id -d "data={\"note\": \"fred\", \"word\": \"fred\"}" -X PUT
+curl http://localhost:5000/notes/note_id -d "data={\"note\": \"foo\", \"word\": \"foo\"}" -X PUT
+
+curl http://localhost:5000/notes/note_id -d "data={\"note\": \"bar\", \"word\": \"bar\"}" -X PUT
+
+curl http://localhost:5000/notes/note_id -d "data={\"note\": \"fred\", \"word\": \"fred\"}" -X PUT
 
 ## Get session
 
-curl http://localhost:5000/session/<session_id>
+curl http://localhost:5000/sessions/<session_id>
