@@ -5,12 +5,23 @@
 
 ## Insert note 
 
-curl http://localhost:5000/notes/note_id -d "data={\"note\": \"foo\", \"word\": \"foo\"}" -X PUT
+curl http://localhost:5000/notes/note_id -d "data={\"note\": \"foo\", \"word\": \"foo\"}" -X POST
 
-curl http://localhost:5000/notes/note_id -d "data={\"note\": \"bar\", \"word\": \"bar\"}" -X PUT
+curl http://localhost:5000/notes/note_id -d "data={\"note\": \"bar\", \"word\": \"bar\"}" -X POST
 
-curl http://localhost:5000/notes/note_id -d "data={\"note\": \"fred\", \"word\": \"fred\"}" -X PUT
+curl http://localhost:5000/notes/note_id -d "data={\"note\": \"fred\", \"word\": \"fred\"}" -X POST
 
 ## Get session
 
 curl http://localhost:5000/sessions/<session_id>
+
+
+# Mongo Db Console
+
+show dbs
+
+use <db>
+
+show collections
+
+db.<collection>.count
