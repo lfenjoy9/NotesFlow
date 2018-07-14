@@ -1,10 +1,11 @@
+// TODO: Make it configurable.
 var notesFlowServer = "http://127.0.0.1:5000"; 
 
 /**
  * Posts noteInfo to Notes Server.
  * @param {*} noteInfo 
  *  note
- *  term
+ *  term (word)
  *  sound
  *  sentence
  *  offset
@@ -14,7 +15,7 @@ var notesFlowServer = "http://127.0.0.1:5000";
 function postNoteInfoToNotesServer(noteInfo) {
     var noteInfoDict = {
         "note": "",
-        "term": noteInfo.term,
+        "word": noteInfo.term,
         "sound": noteInfo.sound,
         "sentence": noteInfo.sentence,
         "offset": noteInfo.offset,
@@ -25,10 +26,15 @@ function postNoteInfoToNotesServer(noteInfo) {
     console.log(data);
     $.ajax({
         type: "POST",
+        contentType: 'application/json',
         url: notesFlowServer + "/notes/0",
         data: data,
+        dataType : 'json',
         success: function(response) {
             console.log(response);
         },
+        error: function(result) {
+            console.log(result)
+        }
     });
 }
