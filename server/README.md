@@ -18,10 +18,26 @@ curl http://localhost:5000/sessions/<session_id>
 
 # Mongo Db Console
 
+```
 show dbs
+```
 
+```
 use <db>
+```
 
+```
 show collections
+```
 
+```
 db.<collection>.count
+```
+
+```
+db.words.find({'word':'test'})
+```
+
+```
+db.words.drop()
+```
