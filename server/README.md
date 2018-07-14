@@ -3,10 +3,12 @@
 
 ./mongod --dbpath=/Users/l9mtv/workplaces/mongodb-osx-x86_64-3.6.6-7-gdef12b4/data
 
-## PUT
+## Insert note 
 
-curl http://localhost:5000/note/note_id -d "data={\"note\": \"foo\"}" -X PUT
+curl http://localhost:5000/note/note_id -d "data={\"note\": \"foo\", \"word\": \"foo\"}" -X PUT
+curl http://localhost:5000/note/note_id -d "data={\"note\": \"bar\", \"word\": \"bar\"}" -X PUT
+curl http://localhost:5000/note/note_id -d "data={\"note\": \"fred\", \"word\": \"fred\"}" -X PUT
 
-## GET
+## Get session
 
-curl http://localhost:5000/note/<note_id>
+curl http://localhost:5000/session/<session_id>
