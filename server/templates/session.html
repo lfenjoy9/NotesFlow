@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+    <title>Session</title>
+    <script src="https://unpkg.com/vue"></script>
+</head>
+<body>
+    <h3>{{ name }}</h3>
+    <div id="app">
+        {% raw %}
+        <p>{{ message }}</p>
+        {% endraw %}
+        <p>message</p>
+    </div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue.js!'
+        }
+    })
+</script>
+</body>
+</html>
