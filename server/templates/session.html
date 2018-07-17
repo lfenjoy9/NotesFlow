@@ -10,15 +10,17 @@
     <div id="app">
         {% raw %}
         <p>{{ message }}</p>
-        <li v-for="(item, index) in items" v-if="!item.reviewed">
-            <input type="checkbox" v-model="item.reviewed">
-            <span v-if=item.displayWord>{{ item.word }}</span>
-            <span v-else=item.displayWord v-on:click="displayWord(index)">Display Word</span>
-            <span>{{ item.firstPart }}</span>
-            <input v-model="item.input" v-on:keyup.enter="submit(index)">
-            <span>{{ item.secondPart }}</span>
-            <span>{{ item.result }}</span>
-        </li>
+        <div v-if="items.length>0">
+            <span v-if=items[index].displayWord>{{ items[index].word }}</span>
+            <span v-else=items[index].displayWord v-on:click="displayWord(index)">Display Word</span>
+            <span>{{ items[index].firstPart }}</span>
+            <input v-model="items[index].input" v-on:keyup.enter="submit(index)">
+            <span>{{ items[index].secondPart }}</span>
+            <span>{{ items[index].result }}</span>
+            <div v-if="index+1<items.length">
+                <button v-on:click="nextItem">Next</button>
+            </div>
+        </div>
         <div>
             <button v-on:click="createOrSubmitSession">{{next_mode_text}}</button>
         </div>
@@ -48,6 +50,7 @@
         }
         return itmesProcessed;
     }
+    
     function getItemsFromJson(json) {
         var items = []
         var session = JSON.parse(json);
@@ -70,6 +73,7 @@
             inputs: [],
             next_mode_text: 'New Session',
             curr_mode: 'done',
+            index: 0,
         },
         methods: {
             submit: function(index) {
@@ -77,6 +81,11 @@
             },
             displayWord: function(index) {
                 this.items[index].displayWord = true;
+            },
+            nextItem: function() {
+                if (this.index < this.items.length - 1) {
+                    this.index++;
+                }
             },
             createOrSubmitSession: function() {
                 if (this.curr_mode == 'in-progress') {
