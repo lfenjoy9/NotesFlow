@@ -3,6 +3,7 @@
 <head>
     <title>Session</title>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
     <h3>Name: {{ name }}</h3>
@@ -93,7 +94,20 @@
                 } else {
                     this.curr_mode = 'in-progress';
                     this.items = processItems(getItems());
-                    this.next_mode_text = 'Done'
+                    this.next_mode_text = 'Done';
+                    return;
+                    $.ajax({
+                        url: "http://localhost:5000/sessions/1",
+                        type: 'GET',
+                        success: function(response) {
+                            console.log("success:", response);
+                            // TODO: Set itmes by response.
+                            this.items = processItems(getItems());
+                        },
+                        error: function(result) {
+                            console.log(result)
+                        }
+                    });
                 }
             },
         }
