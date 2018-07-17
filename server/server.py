@@ -42,4 +42,4 @@ api.add_resource(Note, '/notes/<string:note_id>')
 api.add_resource(Session, '/sessions/<string:session_id>')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=6000)
