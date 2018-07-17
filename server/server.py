@@ -36,10 +36,11 @@ class Session(Resource):
     def get(self, session_id):
         session_id = db.create_session()
         session = db.get_session(session_id)
-        return dumps(session)
+        print(dumps(session))
+        return dumps(session), 200, {'Access-Control-Allow-Origin': '*'}
 
 api.add_resource(Note, '/notes/<string:note_id>')
 api.add_resource(Session, '/sessions/<string:session_id>')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=6000)
+    app.run(host='0.0.0.0', port=5000)
