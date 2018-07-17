@@ -2,23 +2,102 @@
 <html>
 <head>
     <title>Session</title>
-    <script src="https://unpkg.com/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
 </head>
 <body>
-    <h3>{{ name }}</h3>
+    <h3>Name: {{ name }}</h3>
     <div id="app">
         {% raw %}
         <p>{{ message }}</p>
+        <li v-for="(item, index) in items" v-if="!item.reviewed">
+            <input type="checkbox" v-model="item.reviewed">
+            <span v-if=item.displayName>{{ item.name }}</span>
+            <span v-else=item.displayName v-on:click="displayName(index)">Display Name</span>
+            <span>{{ item.firstPart }}</span>
+            <input v-model="item.input" v-on:keyup.enter="submit(index)">
+            <span>{{ item.secondPart }}</span>
+            <span>{{ item.result }}</span>
+        </li>
+        <div>
+            <button v-on:click="createOrSubmitSession">{{next_mode_text}}</button>
+        </div>
         {% endraw %}
-        <p>message</p>
     </div>
-<script>
+    <script>
+    function getItems() {
+        return [
+            {
+                name: 'name1',
+                comment: 'This is comment for name1. This is the 2nd sentence.',
+                firstPart: '',
+                secondPart: '',
+                displayName: false,
+                input: '',
+                result: undefined,
+                reviewed: false,
+            },
+            {
+                name: 'name2',
+                comment: 'This is comment for name2. This is the 2nd sentence.',
+                firstPart: '',
+                secondPart: '',
+                displayName: false,
+                input: '',
+                result: undefined,
+                reviewed: false,
+            },
+            {
+                name: 'name3',
+                comment: 'This is comment for name3. This is the 2nd sentence.',
+                firstPart: '',
+                secondPart: '',
+                displayName: false,
+                input: '',
+                result: undefined,
+                reviewed: false,
+            },
+        ];
+    }
+    function processItems(items) {
+        var itmesProcessed = [];
+        for (var i in items) {
+            var newItem = items[i];
+            var startPos = newItem.comment.indexOf(newItem.name);
+            newItem.firstPart = newItem.comment.substring(0, startPos);
+            newItem.secondPart = newItem.comment.substring(startPos + newItem.name.length);
+            itmesProcessed.push(newItem);
+        }
+        return itmesProcessed;
+    }
     new Vue({
         el: '#app',
         data: {
-            message: 'Hello Vue.js!'
+            message: 'Hello Vue.js!',
+            items: [],
+            inputs: [],
+            next_mode_text: 'New Session',
+            curr_mode: 'done',
+        },
+        methods: {
+            submit: function(index) {
+                this.items[index].result = (this.items[index].input == this.items[index].name);
+            },
+            displayName: function(index) {
+                this.items[index].displayName = true;
+            },
+            createOrSubmitSession: function() {
+                if (this.curr_mode == 'in-progress') {
+                    this.curr_mode = 'done';
+                    this.items = [];
+                    this.next_mode_text = 'New Session';
+                } else {
+                    this.curr_mode = 'in-progress';
+                    this.items = processItems(getItems());
+                    this.next_mode_text = 'Done'
+                }
+            },
         }
     })
-</script>
+    </script>
 </body>
 </html>
