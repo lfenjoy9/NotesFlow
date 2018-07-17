@@ -34,7 +34,7 @@ class Session(Resource):
         return {'status': 'ok'}
 
     def get(self, session_id):
-        session_id = db.create_session()
+        session_id = db.create_session(10)
         session = db.get_session(session_id)
         print(dumps(session))
         return dumps(session), 200, {'Access-Control-Allow-Origin': '*'}

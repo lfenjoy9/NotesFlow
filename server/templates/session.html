@@ -12,8 +12,8 @@
         <p>{{ message }}</p>
         <li v-for="(item, index) in items" v-if="!item.reviewed">
             <input type="checkbox" v-model="item.reviewed">
-            <span v-if=item.displayName>{{ item.name }}</span>
-            <span v-else=item.displayName v-on:click="displayName(index)">Display Name</span>
+            <span v-if=item.displayWord>{{ item.word }}</span>
+            <span v-else=item.displayWord v-on:click="displayWord(index)">Display Word</span>
             <span>{{ item.firstPart }}</span>
             <input v-model="item.input" v-on:keyup.enter="submit(index)">
             <span>{{ item.secondPart }}</span>
@@ -25,52 +25,44 @@
         {% endraw %}
     </div>
     <script>
-    function getItems() {
-        return [
-            {
-                name: 'name1',
-                comment: 'This is comment for name1. This is the 2nd sentence.',
-                firstPart: '',
-                secondPart: '',
-                displayName: false,
-                input: '',
-                result: undefined,
-                reviewed: false,
-            },
-            {
-                name: 'name2',
-                comment: 'This is comment for name2. This is the 2nd sentence.',
-                firstPart: '',
-                secondPart: '',
-                displayName: false,
-                input: '',
-                result: undefined,
-                reviewed: false,
-            },
-            {
-                name: 'name3',
-                comment: 'This is comment for name3. This is the 2nd sentence.',
-                firstPart: '',
-                secondPart: '',
-                displayName: false,
-                input: '',
-                result: undefined,
-                reviewed: false,
-            },
-        ];
+    function getDefaultItem() {
+        return {
+            word: '',
+            sentence: '',
+            firstPart: '',
+            secondPart: '',
+            displayWord: false,
+            input: '',
+            result: undefined,
+            reviewed: false,
+        };
     }
     function processItems(items) {
         var itmesProcessed = [];
         for (var i in items) {
             var newItem = items[i];
-            var startPos = newItem.comment.indexOf(newItem.name);
-            newItem.firstPart = newItem.comment.substring(0, startPos);
-            newItem.secondPart = newItem.comment.substring(startPos + newItem.name.length);
+            var startPos = newItem.sentence.indexOf(newItem.word);
+            newItem.firstPart = newItem.sentence.substring(0, startPos);
+            newItem.secondPart = newItem.sentence.substring(startPos + newItem.word.length);
             itmesProcessed.push(newItem);
         }
         return itmesProcessed;
     }
-    new Vue({
+    function getItemsFromJson(json) {
+        var items = []
+        var session = JSON.parse(json);
+        for (var i in session.words) {
+            for (var j in session.words[i].notes) {
+                var note = session.words[i].notes[j];
+                var item = getDefaultItem(); 
+                item.word = note.word;
+                item.sentence = note.sentence; 
+            }
+            items.push(item);
+        }
+        return items;
+    }
+    var app = new Vue({
         el: '#app',
         data: {
             message: 'Hello Vue.js!',
@@ -81,10 +73,10 @@
         },
         methods: {
             submit: function(index) {
-                this.items[index].result = (this.items[index].input == this.items[index].name);
+                this.items[index].result = (this.items[index].input == this.items[index].word);
             },
-            displayName: function(index) {
-                this.items[index].displayName = true;
+            displayWord: function(index) {
+                this.items[index].displayWord = true;
             },
             createOrSubmitSession: function() {
                 if (this.curr_mode == 'in-progress') {
@@ -93,16 +85,15 @@
                     this.next_mode_text = 'New Session';
                 } else {
                     this.curr_mode = 'in-progress';
-                    this.items = processItems(getItems());
                     this.next_mode_text = 'Done';
-                    return;
+                    // return;
                     $.ajax({
+                        // TODO: Make it configurable.
                         url: "http://localhost:5000/sessions/1",
                         type: 'GET',
                         success: function(response) {
                             console.log("success:", response);
-                            // TODO: Set itmes by response.
-                            this.items = processItems(getItems());
+                            app.items = processItems(getItemsFromJson(response));
                         },
                         error: function(result) {
                             console.log(result)
