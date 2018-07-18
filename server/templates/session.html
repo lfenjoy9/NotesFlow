@@ -242,6 +242,7 @@
                             console.log("success:", response);
                             app.session = JSON.parse(response);
                             console.log("session:", app.session);
+                            // TODO: move processItems() and getItemsFromJson() into App.
                             app.items = processItems(getItemsFromJson(response));
                         },
                         error: function(result) {
