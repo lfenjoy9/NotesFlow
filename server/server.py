@@ -9,6 +9,7 @@ from flask import Flask
 from flask import request
 from flask_restful import Api
 from flask_restful import Resource
+import json
 
 app = Flask(__name__)
 api = Api(app)
@@ -29,15 +30,24 @@ class Note(Resource):
 
 class Session(Resource):
 
-    def put(self, session_id):
-        db.update_session(loads(request.form['data']))
-        return {'status': 'ok'}
+    def post(self, session_id):
+        session = request.get_json()
+        db.update_session(session)
+        return dumps({'status': 'ok'}), 200, {'Access-Control-Allow-Origin': '*'}
 
     def get(self, session_id):
         session_id = db.create_session(10)
         session = db.get_session(session_id)
         print(dumps(session))
         return dumps(session), 200, {'Access-Control-Allow-Origin': '*'}
+
+    # https://stackoverflow.com/questions/19962699/flask-restful-cross-domain-issue-with-angular-put-options-methods
+    def options (self, session_id):
+        return {'Allow' : 'PUT' }, 200, \
+            { 'Access-Control-Allow-Origin': '*', \
+            'Access-Control-Allow-Methods' : 'PUT,GET,POST', \
+            'Access-Control-Allow-Headers' : 'Content-Type' }
+
 
 api.add_resource(Note, '/notes/<string:note_id>')
 api.add_resource(Session, '/sessions/<string:session_id>')

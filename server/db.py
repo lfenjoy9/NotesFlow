@@ -52,6 +52,10 @@ class Db:
     def update_session(self, session):
         if self.sessions.find_one({'session_id': session['session_id']}) != None:
             self.sessions.delete_one({'session_id': session['session_id']})
+        # Cleanup '_id'
+        del session['_id']
+        for x in session['words']:
+            del x['_id']
         self.sessions.insert(session)
         
 if __name__ == '__main__':

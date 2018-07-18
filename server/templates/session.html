@@ -107,6 +107,7 @@
         data: {
             state: StatsEnum.undefined,
             next_state_text: 'New Session',
+            session: undefined,
             items: [],
             index: 0,
             message: "",
@@ -180,6 +181,43 @@
                 this.items = [];
                 this.index = 0;
             },
+            submitSession: function() {
+                // Submits the session.
+                // Set the completed time in milliseconds.
+                var d = new Date();
+                this.session["completedTime"] = d.getTime();
+                // Update errors for each word.
+                for (var i in this.session.words) {
+                    this.session.words[i]["errors"] = 0;
+                }
+                for (var i in this.items) {
+                    var word = this.items[i].word;
+                    var errors = this.items[i].errors;
+                    if (errors == 0) {
+                        continue;
+                    }
+                    for (var j in this.session.words) {
+                        if (this.session.words[j].word == word) {
+                            this.session.words[j].errors += errors;
+                            break;
+                        }
+                    }
+                }
+                console.log("session to be submitted:", this.session);
+                $.ajax({
+                    url: "http://localhost:5000/sessions/1",
+                    type: 'POST',
+                    contentType: 'application/json',
+                    dataType : 'json',
+                    data: JSON.stringify(this.session),
+                    success: function(response) {
+                        console.log("success:", response);
+                    },
+                    error: function(result) {
+                        console.log("error:", result)
+                    }
+                });
+            },
             createOrSubmitSession: function() {
                 if (this.state == StatsEnum.summary) {
                     // Clear the session.
@@ -187,6 +225,7 @@
                     this.resetSession();
                    this.next_state_text = 'New Session';
                 } else if (this.state == StatsEnum.in_progress) {
+                    this.submitSession();
                     // Display summary.
                     this.state = StatsEnum.summary;
                     this.next_state_text = 'Done';
@@ -201,6 +240,8 @@
                         type: 'GET',
                         success: function(response) {
                             console.log("success:", response);
+                            app.session = JSON.parse(response);
+                            console.log("session:", app.session);
                             app.items = processItems(getItemsFromJson(response));
                         },
                         error: function(result) {
