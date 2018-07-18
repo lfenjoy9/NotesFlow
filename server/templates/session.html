@@ -28,8 +28,15 @@
             </div>
         </div>
         <div v-if="state==StatsEnum.summary">
-            <!-- TODO: Display summary. -->
             <b>Summary</b>
+            <br>
+            <br>
+            <span><b>Word</b></span>
+            <span><b>Errors</b></span>
+            <li v-for="item in items" v-if="item.errors>0">
+                <span>{{ item.word }}</span>
+                <span>{{ item.errors }}</span>
+            </li>
         </div>
         <br>
         <div>
