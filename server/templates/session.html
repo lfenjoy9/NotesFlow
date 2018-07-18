@@ -11,6 +11,7 @@
         {% raw %}
         <div v-if="state==StatsEnum.in_progress">
             <div><b>Review</b></div>
+            <br>
             <div v-if="items.length>0">
                 <span v-if=items[index].displayWord>{{ items[index].word }}</span>
                 <span v-else=items[index].displayWord v-on:click="displayWord(index)">Display Word</span>
@@ -24,14 +25,17 @@
             <!-- TODO: Display summary. -->
             <b>Summary</b>
         </div>
+        <br>
         <div>
             <button v-on:click="createOrSubmitSession">{{next_state_text}}</button>
         </div>
         <div>
             <div>{{ message }}</div>
         </div>
+        <br>
         <div>
             <div><b>Debug</b></div>
+            <br>
             <div>State: {{ state }} </div>
             <div>Index/Count: {{ index }}/{{ items.length }} </div>
         </div>
