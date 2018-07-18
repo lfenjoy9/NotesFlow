@@ -28,6 +28,9 @@
             <button v-on:click="createOrSubmitSession">{{next_state_text}}</button>
         </div>
         <div>
+            <div>{{ message }}</div>
+        </div>
+        <div>
             <div><b>Debug</b></div>
             <div>State: {{ state }} </div>
             <div>Index/Count: {{ index }}/{{ items.length }} </div>
@@ -85,6 +88,7 @@
             next_state_text: 'New Session',
             items: [],
             index: 0,
+            message: "",
         },
         methods: {
             submit: function(index) {
@@ -185,7 +189,15 @@
                 }
             },
         }
-    })
+    });
+    $(document).bind('keydown', '', function(e){
+        if (e.ctrlKey && e.key == 'i') {
+            // "ctrl + i" pressed.
+            if (app.items.length > 0) {
+                app.displayWord(app.index);
+            }
+        }
+    });
     </script>
 </body>
 </html>
