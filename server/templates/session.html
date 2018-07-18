@@ -6,9 +6,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
 <body>
-    <h3>Name: {{ name }}</h3>
     <div id="app">
         {% raw %}
+        <div v-if="state==StatsEnum.undefined">
+            <b>Welcome</b>
+        </div>
         <div v-if="state==StatsEnum.in_progress">
             <div><b>Review</b></div>
             <br>
