@@ -9,20 +9,31 @@
     <h3>Name: {{ name }}</h3>
     <div id="app">
         {% raw %}
-        <p>{{ message }}</p>
-        <div v-if="items.length>0">
-            <span v-if=items[index].displayWord>{{ items[index].word }}</span>
-            <span v-else=items[index].displayWord v-on:click="displayWord(index)">Display Word</span>
-            <span>{{ items[index].firstPart }}</span>
-            <input v-model="items[index].input" v-on:keyup.enter="submit(index)">
-            <span>{{ items[index].secondPart }}</span>
-            <span>{{ items[index].result }}</span>
-            <div v-if="index+1<items.length">
-                <button v-on:click="nextItem">Next</button>
+        <div v-if="state==StatsEnum.in_progress">
+            <div><b>Review</b></div>
+            <div v-if="items.length>0">
+                <span v-if=items[index].displayWord>{{ items[index].word }}</span>
+                <span v-else=items[index].displayWord v-on:click="displayWord(index)">Display Word</span>
+                <span>{{ items[index].firstPart }}</span>
+                <input v-model="items[index].input" v-on:keyup.enter="submit(index)">
+                <span>{{ items[index].secondPart }}</span>
+                <span>{{ items[index].result }}</span>
+                <div v-if="index+1<items.length">
+                    <button v-on:click="nextItem">Next</button>
+                </div>
             </div>
         </div>
+        <div v-if="state==StatsEnum.summary">
+            <!-- TODO: Display summary. -->
+            <b>Summary</b>
+        </div>
         <div>
-            <button v-on:click="createOrSubmitSession">{{next_mode_text}}</button>
+            <button v-on:click="createOrSubmitSession">{{next_state_text}}</button>
+        </div>
+        <div>
+            <div><b>Debug</b></div>
+            <div>State: {{ state }} </div>
+            <div>Index/Count: {{ index }}/{{ items.length }} </div>
         </div>
         {% endraw %}
     </div>
@@ -36,7 +47,12 @@
             displayWord: false,
             input: '',
             result: undefined,
+            // Reset to undefined when it's being reviewed.
+            // Set to false if incorrect.
+            first_attempt_result: undefined,
             reviewed: false,
+            errors: 0,
+            asked_help: false,
         };
     }
     function processItems(items) {
@@ -50,7 +66,6 @@
         }
         return itmesProcessed;
     }
-    
     function getItemsFromJson(json) {
         var items = []
         var session = JSON.parse(json);
@@ -65,36 +80,98 @@
         }
         return items;
     }
+    var StatsEnum = Object.freeze({"undefined":1, "in_progress":2, "summary":3, "done": 4});
     var app = new Vue({
         el: '#app',
         data: {
-            message: 'Hello Vue.js!',
+            state: StatsEnum.undefined,
+            next_state_text: 'New Session',
             items: [],
-            inputs: [],
-            next_mode_text: 'New Session',
-            curr_mode: 'done',
             index: 0,
         },
         methods: {
             submit: function(index) {
-                this.items[index].result = (this.items[index].input == this.items[index].word);
+                if (this.items[index].input == this.items[index].word) {
+                    this.items[index].result = true;
+                    if (this.items[index].first_attempt_result == undefined) {
+                        this.items[index].first_attempt_result = true; 
+                    } 
+                    // Go to the next time if passed.
+                    this.nextItem();
+                } else {
+                    this.items[index].result = false;
+                    if (this.items[index].first_attempt_result == undefined) {
+                        this.items[index].first_attempt_result = false; 
+                    }
+                    this.items[index].errors++;
+                }
             },
             displayWord: function(index) {
                 this.items[index].displayWord = true;
+                this.items[index].asked_help = true;
+                this.items[index].first_attempt_result = false;
+            },
+            getNextItemIndex: function() {
+                // Returns the next item to review.
+                // If not found, returns -1
+                var num_items_first_time_passed = 0;
+                var next_index = this.index+1;
+                if (next_index == this.items.length) {
+                    next_index = 0;
+                }
+                var num_items_checked = 0;
+                while (num_items_first_time_passed < this.items.length && 
+                    num_items_checked < this.items.length) {
+                   num_items_checked++;
+                   if (this.items[next_index].first_attempt_result == undefined || 
+                        !this.items[next_index].first_attempt_result) {
+                        return next_index;
+                    }
+                    num_items_first_time_passed++;
+                    next_index++;
+                    if (next_index == this.items.length) {
+                        next_index = 0;
+                    }
+                }
+                // num_items_first_time_passed == this.items.length
+                return -1;
+            },
+            resetItem: function(index) {
+                this.items[index].displayWord = false;
+                this.items[index].input = "";
+                this.items[index].asked_help = false;
+                this.items[index].first_attempt_result = undefined;
+                this.items[index].result = undefined;
             },
             nextItem: function() {
-                if (this.index < this.items.length - 1) {
-                    this.index++;
+                var next_index = this.getNextItemIndex();
+                if (next_index == -1) {
+                    // Auto submit when done.
+                    this.createOrSubmitSession();
+                } else {
+                    // Go to the next item.
+                    this.index = next_index;
+                    this.resetItem(this.index);
                 }
             },
+            resetSession: function() {
+                this.items = [];
+                this.index = 0;
+            },
             createOrSubmitSession: function() {
-                if (this.curr_mode == 'in-progress') {
-                    this.curr_mode = 'done';
-                    this.items = [];
-                    this.next_mode_text = 'New Session';
+                if (this.state == StatsEnum.summary) {
+                    // Clear the session.
+                    this.state = StatsEnum.done;
+                    this.resetSession();
+                   this.next_state_text = 'New Session';
+                } else if (this.state == StatsEnum.in_progress) {
+                    // Display summary.
+                    this.state = StatsEnum.summary;
+                    this.next_state_text = 'Done';
                 } else {
-                    this.curr_mode = 'in-progress';
-                    this.next_mode_text = 'Done';
+                    // The current state is 'done' or 'undefined'.
+                    this.state = StatsEnum.in_progress;
+                    this.next_state_text = 'Submit';
                     // return;
                     $.ajax({
                         // TODO: Make it configurable.
