@@ -18,9 +18,6 @@
                 <input v-model="items[index].input" v-on:keyup.enter="submit(index)">
                 <span>{{ items[index].secondPart }}</span>
                 <span>{{ items[index].result }}</span>
-                <div v-if="index+1<items.length">
-                    <button v-on:click="nextItem">Next</button>
-                </div>
             </div>
         </div>
         <div v-if="state==StatsEnum.summary">
