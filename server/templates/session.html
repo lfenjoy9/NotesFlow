@@ -15,12 +15,16 @@
             <div><b>Review</b></div>
             <br>
             <div v-if="items.length>0">
-                <span v-if=items[index].displayWord>{{ items[index].word }}</span>
-                <span v-else=items[index].displayWord v-on:click="displayWord(index)">Display Word</span>
-                <span>{{ items[index].firstPart }}</span>
-                <input v-model="items[index].input" v-on:keyup.enter="submit(index)">
-                <span>{{ items[index].secondPart }}</span>
-                <span>{{ items[index].result }}</span>
+                <div>
+                    <span>#{{ index }}</span>
+                    <span>{{ items[index].firstPart }}</span>
+                    <input v-model="items[index].input" v-on:keyup.enter="submit(index)">
+                    <span>{{ items[index].secondPart }}</span>
+                    <span>{{ items[index].result }}</span>
+                </div>
+               <div>
+                    <span v-if=items[index].displayWord>{{ items[index].word }}</span>
+                </div>
             </div>
         </div>
         <div v-if="state==StatsEnum.summary">
@@ -36,6 +40,10 @@
         </div>
         <br>
         <div>
+            <div><b>Info</b></div>
+            <br>
+            <div>ctrl + i: Display word.</div>
+            <br>
             <div><b>Debug</b></div>
             <br>
             <div>State: {{ state }} </div>
