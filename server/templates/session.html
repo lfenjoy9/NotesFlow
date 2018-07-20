@@ -50,6 +50,7 @@
             <div><b>Help</b></div>
             <br>
             <div>ctrl + i: Display word.</div>
+            <div>ctrl + p: Play sound.</div>
             <br>
             <div><b>Debug</b></div>
             <br>
@@ -63,6 +64,7 @@
         return {
             word: '',
             sentence: '',
+            soundFile: '',
             firstPart: '',
             secondPart: '',
             displayWord: false,
@@ -96,10 +98,18 @@
                 var item = getDefaultItem(); 
                 item.word = note.word;
                 item.sentence = note.sentence; 
+                item.soundFile = note.sound;
             }
             items.push(item);
         }
         return items;
+    }
+    function playSoundByWebster(wavFilename) {
+        console.log("play", wavFilename)
+        var url = "http://media.merriam-webster.com/soundc11/";
+        url += wavFilename[0] + "/" + wavFilename;
+        var audio = new Audio(url);
+        audio.play();
     }
     var StatsEnum = Object.freeze({"undefined":1, "in_progress":2, "summary":3, "done": 4});
     var app = new Vue({
@@ -113,6 +123,12 @@
             message: "",
         },
         methods: {
+            getCurrentItem: function() {
+                if (this.items.length == 0) {
+                    return undefined;
+                }
+                return this.items[this.index];
+            }, 
             submit: function(index) {
                 if (this.items[index].input == this.items[index].word) {
                     this.items[index].result = true;
@@ -133,6 +149,12 @@
                 this.items[index].displayWord = true;
                 this.items[index].asked_help = true;
                 this.items[index].first_attempt_result = false;
+            },
+            playSound: function() {
+                var currentItem = this.getCurrentItem();
+                if (currentItem != undefined) {
+                    playSoundByWebster(this.items[this.index].soundFile);
+                }
             },
             getNextItemIndex: function() {
                 // Returns the next item to review.
@@ -259,6 +281,10 @@
             if (app.items.length > 0) {
                 app.displayWord(app.index);
             }
+        }
+        if (e.ctrlKey && e.key == 'p') {
+            // "ctrl + p" pressed.
+            app.playSound();
         }
     });
     </script>
