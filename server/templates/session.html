@@ -5,18 +5,74 @@
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 </head>
+    <style>
+    div {
+        padding: 5px 5px 5px 5px;
+    }
+    .app {
+        width: 50%;
+    }
+    .action {
+        position: relative;
+        float: right;
+    }
+    .welcome-title {
+        font-weight: bold;
+        text-align: center;
+        font-size: larger; 
+    }
+    .review-title {
+        font-weight: bold;
+        text-align: center;
+        font-size: larger; 
+    }
+    .review-index {
+        position: relative;
+        float: right;
+        font-weight: bold;
+    }
+    .summary-title {
+        font-weight: bold;
+        font-size: larger;
+        text-align: center;
+    }
+    .review-details {
+        font-size: large;
+    }
+    .summary-errors {
+        width:50%;
+        font-weight: bold;
+        font-size: large;
+        text-align: center;
+        margin: 10px auto;
+    }
+    /* .help, .debug {
+        position: relative;
+        float: right;
+    } */
+    </style>
 <body>
-    <div id="app">
+    <div  class="app" id="app">
         {% raw %}
-        <div v-if="state==StatsEnum.undefined">
-            <b>Welcome</b>
+        <div class="Welcome" v-if="state==StatsEnum.done">
+            <div class="welcome-title">
+                Welcome
+            </div>
+            <div class="action">
+                <button v-on:click="createOrSubmitSession">New Session</button>
+            </div>
         </div>
-        <div v-if="state==StatsEnum.in_progress">
-            <div><b>Review</b></div>
+        <div class="review" v-if="state==StatsEnum.in_progress">
+            <div class="review-title">
+                Review
+            </div>
             <br>
             <div v-if="items.length>0">
-                <div>
-                    <span>#{{ index }}</span>
+                <div class="review-index">
+                    {{ index }}
+                </div>
+                <br>
+                <div class="review-details">
                     <span>{{ items[index].firstPart }}</span>
                     <input v-model="items[index].input" v-on:keyup.enter="submit(index)">
                     <span>{{ items[index].secondPart }}</span>
@@ -26,34 +82,35 @@
                     <span v-if=items[index].displayWord>{{ items[index].word }}</span>
                 </div>
             </div>
+            <div>
+                <!-- TODO: Cancel session. -->
+                <button class="action">Cancel</button>
+            </div>
         </div>
-        <div v-if="state==StatsEnum.summary">
-            <b>Summary</b>
-            <br>
-            <br>
-            <span><b>Word</b></span>
-            <span><b>Errors</b></span>
-            <li v-for="item in items" v-if="item.errors>0">
-                <span>{{ item.word }}</span>
-                <span>{{ item.errors }}</span>
-            </li>
+        <div class="summary" v-if="state==StatsEnum.summary">
+            <div class="summary-title">Summary</div>
+            <table class="summary-errors">
+                <th>Word</th>
+                <th>Errors</th>
+                <tr v-for="item in items" v-if="item.errors>0">
+                    <td>{{ item.word }}</td>
+                    <td>{{ item.errors }}</td>
+                </tr>
+            </table>
+            <div>
+                <button class="action" v-on:click="createOrSubmitSession">Done</button>
+            </div>
         </div>
         <br>
-        <div>
-            <button v-on:click="createOrSubmitSession">{{next_state_text}}</button>
-        </div>
-        <div>
-            <div>{{ message }}</div>
-        </div>
         <br>
-        <div>
+        <div class="help">
             <div><b>Help</b></div>
-            <br>
             <div>ctrl + i: Display word.</div>
             <div>ctrl + p: Play sound.</div>
-            <br>
+        </div>
+        <br>
+        <div class="debug">
             <div><b>Debug</b></div>
-            <br>
             <div>State: {{ state }} </div>
             <div>Index/Count: {{ index }}/{{ items.length }} </div>
         </div>
@@ -115,7 +172,7 @@
     var app = new Vue({
         el: '#app',
         data: {
-            state: StatsEnum.undefined,
+            state: StatsEnum.done,
             next_state_text: 'New Session',
             session: undefined,
             items: [],
