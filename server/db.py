@@ -14,18 +14,22 @@ class Db:
         self.sessions = self.db.sessions
         self.words = self.db.words
 
+
     def reset(self):
         self.words.drop()
+
 
     def get_word(self, w):
         word = self.words.find_one({'word': w})
         return word 
+
 
     def insert_note(self, note):
         word = self.words.find_one({'word': note['word']})
         if word == None:
             word = {}
             word['word_id'] = uuid.uuid1().hex
+            word['new_word'] = True 
             word['word'] = note['word']
             word['notes'] = []
         else:
@@ -34,6 +38,7 @@ class Db:
             self.words.delete_one({'word': note['word']})
         word['notes'].append(note)
         self.words.insert(word)
+
     
     def create_session(self, size=1):
         words = self.words.aggregate([
@@ -45,10 +50,12 @@ class Db:
         self.sessions.insert(session)
         return session['session_id']
         
+
     def get_session(self, session_id):
         session = self.sessions.find_one({'session_id': session_id})
         return session 
     
+
     def update_session(self, session):
         if self.sessions.find_one({'session_id': session['session_id']}) != None:
             self.sessions.delete_one({'session_id': session['session_id']})
@@ -56,8 +63,39 @@ class Db:
         del session['_id']
         for x in session['words']:
             del x['_id']
+        for word in session['words']:
+            self.update_word(word['word'])
         self.sessions.insert(session)
+
         
+    def update_word(self, word):
+        w = self.words.find_one({'word': word})
+        # Clear new_word flag. 
+        w['new_word'] = False 
+        self.words.update_one({'word': word}, {"$set": w}, upsert=False)
+        
+
+    def select_new_words(self, size=20):
+        """Return words from new_words collection.""" 
+        words = self.words.aggregate([
+            {'$match': {'new_word': True}},
+            {'$sample': {'size': size}},
+        ])
+        return list(words)
+
+
+    def select_error_words(self, size=20):
+        pass
+
+
+    def select_old_words(self, size=20):
+        pass
+    
+
+    def select_recent_words(self, size=20):
+        pass
+
+
 if __name__ == '__main__':
     db = Db(db_name='testdb')
     db.reset()
@@ -74,4 +112,11 @@ if __name__ == '__main__':
     print("update session.")
     session['status'] = 'completed'
     db.update_session(session)
+    print(db.get_word('bar'))
+    print(db.get_word('foo'))
+    print(db.get_word('poo'))
+    print(db.get_word('goo'))
+    print(db.get_word('fred'))
+    print("select new words (size=1)")
+    print(db.select_new_words(1))
     print(db.get_session(session_id))
