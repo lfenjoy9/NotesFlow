@@ -41,12 +41,9 @@ class Db:
 
     
     def create_session(self, size=1):
-        words = self.words.aggregate([
-            {'$sample': {'size': size}}
-        ])
         session = {}
         session['session_id'] = uuid.uuid1().hex 
-        session['words'] = list(words)
+        session['words'] = self.select_words(size)
         self.sessions.insert(session)
         return session['session_id']
         
@@ -74,6 +71,11 @@ class Db:
         w['new_word'] = False 
         self.words.update_one({'word': word}, {"$set": w}, upsert=False)
         
+
+    def select_words(self, size=50):
+        new_words = self.select_new_words(size)
+        return new_words
+
 
     def select_new_words(self, size=20):
         """Return words from new_words collection.""" 
