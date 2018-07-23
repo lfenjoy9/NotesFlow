@@ -71,7 +71,6 @@ class Db:
         self.sessions.insert(session)
         
 
-        
     def update_word(self, word, errors, last_review_time):
         w = self.words.find_one({'word': word})
         # Clear new_word flag. 
@@ -84,8 +83,14 @@ class Db:
 
     def select_words(self, size=50):
         new_words = self.select_new_words(size)
-        return new_words
+        old_words = self.select_old_words(-1, 0, size) 
+        error_words = self.select_error_words()
+        words = self.merge([new_words, old_words, error_words])
+        return words 
 
+
+    def merge(self, words_srcs):
+        return words_srcs[0]
 
     def select_new_words(self, size=20):
         """Return words from new_words collection.""" 
@@ -97,14 +102,14 @@ class Db:
 
 
     def select_error_words(self, size=20):
-        pass
+        return []
 
 
     def get_today_start_timestamp_sec(self):
         """Return the starting timestmap in sec for today."""
         day_sec = int(floor(time.time()/(3600*24)-1)*(3600*24) + (3600*7))
-        print(day_sec)
         return day_sec
+
 
     # -1, 0
     # -3, -1
@@ -112,7 +117,7 @@ class Db:
     def select_old_words(self, start, end, size=20):
         start_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + start * 24 * 3600 * 1000
         end_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + end * 24 * 3600 * 1000
-        print("start:", start_timestamp_ms, "end:", end_timestamp_ms)
+        print("start_timestamp_ms:", start_timestamp_ms, "end_timestamp_ms:", end_timestamp_ms)
         words = self.words.aggregate([
             {
                 '$match': {
