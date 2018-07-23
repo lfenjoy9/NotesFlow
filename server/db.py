@@ -4,6 +4,8 @@ from __future__ import print_function
 
 from bson.json_util import dumps
 from pymongo import MongoClient
+from math import floor
+import time
 import uuid
 
 class Db:
@@ -32,6 +34,9 @@ class Db:
             word['new_word'] = True 
             word['word'] = note['word']
             word['notes'] = []
+            word['errors'] = 0
+            word["last_review_time"] = 0 
+            word['num_reviews'] = 0 
         else:
             if word['notes'] == None:
                 word['notes'] = []
@@ -44,6 +49,7 @@ class Db:
         session = {}
         session['session_id'] = uuid.uuid1().hex 
         session['words'] = self.select_words(size)
+        session['completedTime'] = 0
         self.sessions.insert(session)
         return session['session_id']
         
@@ -61,14 +67,18 @@ class Db:
         for x in session['words']:
             del x['_id']
         for word in session['words']:
-            self.update_word(word['word'])
+            self.update_word(word['word'], errors=word['errors'], last_review_time=session['completedTime'])
         self.sessions.insert(session)
+        
 
         
-    def update_word(self, word):
+    def update_word(self, word, errors, last_review_time):
         w = self.words.find_one({'word': word})
         # Clear new_word flag. 
         w['new_word'] = False 
+        w['errors'] += errors
+        w["last_review_time"] = last_review_time
+        w['num_reviews'] += 1 
         self.words.update_one({'word': word}, {"$set": w}, upsert=False)
         
 
@@ -90,13 +100,29 @@ class Db:
         pass
 
 
-    def select_old_words(self, size=20):
-        pass
+    def get_today_start_timestamp_sec(self):
+        """Return the starting timestmap in sec for today."""
+        day_sec = int(floor(time.time()/(3600*24)-1)*(3600*24) + (3600*7))
+        print(day_sec)
+        return day_sec
+
+    # -1, 0
+    # -3, -1
+    # -7, -3
+    def select_old_words(self, start, end, size=20):
+        start_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + start * 24 * 3600 * 1000
+        end_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + end * 24 * 3600 * 1000
+        print("start:", start_timestamp_ms, "end:", end_timestamp_ms)
+        words = self.words.aggregate([
+            {
+                '$match': {
+                    'last_review_time': {'$gt': start_timestamp_ms, '$lt': end_timestamp_ms},
+                }
+            },
+            {'$sample': {'size': size}},
+        ])
+        return list(words)
     
-
-    def select_recent_words(self, size=20):
-        pass
-
 
 if __name__ == '__main__':
     db = Db(db_name='testdb')
@@ -113,12 +139,15 @@ if __name__ == '__main__':
     print(session)
     print("update session.")
     session['status'] = 'completed'
+    session['completedTime'] = (int(time.time() - 3600 * 24))*1000
     db.update_session(session)
     print(db.get_word('bar'))
-    print(db.get_word('foo'))
+    print(db.get_word('get_today_start_timestamp_sec'))
     print(db.get_word('poo'))
     print(db.get_word('goo'))
     print(db.get_word('fred'))
     print("select new words (size=1)")
     print(db.select_new_words(1))
     print(db.get_session(session_id))
+    print("select old words.")
+    print(len(db.select_old_words(-1, 0)))
