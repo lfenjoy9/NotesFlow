@@ -8,8 +8,10 @@ from math import floor
 import time
 import uuid
 
+DAYS_MILLI_SECS = 24 * 3600 * 1000 
+
 class Db:
-    
+
     def __init__(self, db_name='mydb'):
         self.client = MongoClient()
         self.db = self.client[db_name]
@@ -136,8 +138,8 @@ class Db:
     # -3, -1
     # -7, -3
     def select_old_words(self, start, end, size=20):
-        start_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + start * 24 * 3600 * 1000
-        end_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + end * 24 * 3600 * 1000
+        start_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + start * DAYS_MILLI_SECS
+        end_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + end * DAYS_MILLI_SECS
         print("start_timestamp_ms:", start_timestamp_ms, "end_timestamp_ms:", end_timestamp_ms)
         words = self.words.aggregate([
             {
