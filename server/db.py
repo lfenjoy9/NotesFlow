@@ -85,12 +85,33 @@ class Db:
         new_words = self.select_new_words(size)
         old_words = self.select_old_words(-1, 0, size) 
         error_words = self.select_error_words()
-        words = self.merge([new_words, old_words, error_words])
+        words = self.merge([new_words, old_words, error_words], size)
         return words 
 
 
-    def merge(self, words_srcs):
-        return words_srcs[0]
+    def merge(self, words_srcs, size):
+        words = []
+        num_srcs = len(words_srcs)
+        src_indices = [0] * num_srcs
+        word_set = set()
+        index = 0
+        while len(words) < size and len(words_srcs) > 0:
+            if src_indices[index] < len(words_srcs[index]):
+               item = words_srcs[index][src_indices[index]]
+               if item['word'] not in word_set:
+                   words.append(item)
+                   word_set.add(item['word'])
+               src_indices[index] += 1
+               index += 1
+               if index >= len(words_srcs):
+                   index = 0
+            else:
+                del words_srcs[index]
+                del src_indices[index]
+                if index >= len(words_srcs):
+                   index = 0
+        return words 
+
 
     def select_new_words(self, size=20):
         """Return words from new_words collection.""" 
