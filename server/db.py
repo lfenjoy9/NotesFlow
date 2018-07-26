@@ -28,18 +28,22 @@ class Db:
         return word 
 
 
+    def createWordDefaultInstance(self, w):
+        word = {}
+        word['new_word'] = True 
+        word['word'] = w
+        word['notes'] = []
+        word['errors'] = 0
+        word["last_review_time"] = 0 
+        word["last_errors"] = 0 
+        word['num_reviews'] = 0 
+        return word
+
+
     def insert_note(self, note):
         word = self.words.find_one({'word': note['word']})
         if word == None:
-            word = {}
-            word['word_id'] = uuid.uuid1().hex
-            word['new_word'] = True 
-            word['word'] = note['word']
-            word['notes'] = []
-            word['errors'] = 0
-            word["last_review_time"] = 0 
-            word["last_errors"] = 0 
-            word['num_reviews'] = 0 
+            word = self.createWordDefaultInstance(note['word'])
         else:
             if word['notes'] == None:
                 word['notes'] = []
@@ -133,7 +137,7 @@ class Db:
         words = self.words.aggregate([
             {
                 '$match': {
-                    # 'last_review_time': {'$gt': start_timestamp_ms, '$lt': end_timestamp_ms},
+                    'last_review_time': {'$gt': start_timestamp_ms, '$lt': end_timestamp_ms},
                     'last_errors': {'$gt': 0},
                 }
             },
