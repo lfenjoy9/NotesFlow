@@ -5,12 +5,15 @@ db = Db()
 
 class TestStringMethods(unittest.TestCase):
 
+    def setUp(self):
+        self.db = Db(db_name='testdb') 
+        self.db.reset()
+
     def test_merge1(self):
         words1 = [{'word': "foo1"}, {'word': 'fred1'}]
         words2 = [{'word': "foo2"}, {'word': 'fred2'}]
         words3 = [{'word': "foo3"}, {'word': 'fred3'}]
-        db = Db()
-        words = db.merge([words1, words2, words3], 4)
+        words = self.db.merge([words1, words2, words3], 4)
         self.assertEqual(words, [{'word': 'foo1'}, {'word': 'foo2'}, 
             {'word': 'foo3'}, {'word': 'fred1'}])
 
@@ -19,8 +22,7 @@ class TestStringMethods(unittest.TestCase):
         words1 = [{'word': "foo1"}, {'word': 'fred1'}]
         words2 = [{'word': "foo2"}, {'word': 'fred2'}]
         words3 = [{'word': "foo3"}, {'word': 'fred3'}]
-        db = Db()
-        words = db.merge([words1, words2, words3], 6)
+        words = self.db.merge([words1, words2, words3], 6)
         self.assertEqual(words, [{'word': 'foo1'}, {'word': 'foo2'}, 
             {'word': 'foo3'}, {'word': 'fred1'}, {'word': 'fred2'}, {'word': 'fred3'}])
 
@@ -29,8 +31,7 @@ class TestStringMethods(unittest.TestCase):
         words1 = [{'word': "foo1"}, {'word': 'fred1'}]
         words2 = [{'word': "foo2"}, {'word': 'fred2'}]
         words3 = [{'word': "foo3"}, {'word': 'fred3'}]
-        db = Db()
-        words = db.merge([words1, words2, words3], 7)
+        words = self.db.merge([words1, words2, words3], 7)
         self.assertEqual(words, [{'word': 'foo1'}, {'word': 'foo2'}, 
             {'word': 'foo3'}, {'word': 'fred1'}, {'word': 'fred2'}, {'word': 'fred3'}])
 
@@ -39,22 +40,19 @@ class TestStringMethods(unittest.TestCase):
         words1 = [{'word': "foo1"}, {'word': 'fred'}]
         words2 = [{'word': "foo2"}, {'word': 'fred'}]
         words3 = [{'word': "foo3"}, {'word': 'fred'}]
-        db = Db()
-        words = db.merge([words1, words2, words3], 6)
+        words = self.db.merge([words1, words2, words3], 6)
         self.assertEqual(words, [{'word': 'foo1'}, {'word': 'foo2'}, 
             {'word': 'foo3'}, {'word': 'fred'}])
 
 
     def test_merge_empty_src1(self):
         words1 = [{'word': "foo1"}, {'word': 'fred1'}]
-        db = Db()
-        words = db.merge([words1, [], []], 6)
+        words = self.db.merge([words1, [], []], 6)
         self.assertEqual(words, [{'word': "foo1"}, {'word': 'fred1'}])
 
     def test_merge_empty_src2(self):
         words1 = [{'word': "foo1"}, {'word': 'fred1'}]
-        db = Db()
-        words = db.merge([[], words1, []], 6)
+        words = self.db.merge([[], words1, []], 6)
         self.assertEqual(words, [{'word': "foo1"}, {'word': 'fred1'}])
 
 
