@@ -75,5 +75,37 @@ class TestStringMethods(unittest.TestCase):
         self.assertEqual(error_words_selected[0]['word'], error_word)
         
 
+    def test_select_old_words(self):
+        session_id = self.db.create_session(2)
+        session = self.db.get_session(session_id)
+        words_of_session = list(map(lambda word: word['word'], session['words']))
+        session['status'] = 'completed'
+        session['completedTime'] = (int(time.time() - 3600 * 24))*1000
+        self.db.update_session(session)
+        old_words =  list(map(lambda word: word['word'], self.db.select_old_words(-1, 0)))
+        self.assertListEqual(words_of_session, old_words)
+
+
+    def test_insert_note(self):
+       self.db.insert_note({'word': 'poopp', 'note': 'This is poopp.'})
+       word = self.db.get_word('poopp') 
+       self.assertEqual(word['word'], 'poopp')
+       self.assertEqual(word['notes'][0]['note'], 'This is poopp.')
+       self.db.insert_note({'word': 'poopp', 'note': 'This is poopp again.'})
+       word = self.db.get_word('poopp') 
+       self.assertEqual(word['notes'][0]['note'], 'This is poopp.')
+       self.assertEqual(word['notes'][1]['note'], 'This is poopp again.')
+
+
+    def test_session(self):
+        session_id = self.db.create_session(2)
+        session = self.db.get_session(session_id)
+        self.assertEqual(len(session['words']), 2)
+        session['status'] = 'completed'
+        session['completedTime'] = (int(time.time() - 3600 * 24))*1000
+        self.db.update_session(session)
+        session = self.db.get_session(session_id)
+
+
 if __name__ == '__main__':
     unittest.main()

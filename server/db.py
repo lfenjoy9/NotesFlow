@@ -30,8 +30,8 @@ class Db:
 
     def createWordDefaultInstance(self, w):
         word = {}
-        word['new_word'] = True 
         word['word'] = w
+        word['new_word'] = True 
         word['notes'] = []
         word['errors'] = 0
         word["last_review_time"] = 0 
@@ -91,7 +91,9 @@ class Db:
 
     def select_words(self, size=50):
         new_words = self.select_new_words(size)
+        # Select yesterday's words.
         old_words = self.select_old_words(-1, 0, size) 
+        # Select the error words in the last few days.
         error_words = self.select_error_words(-3, -1, size)
         words = self.merge([new_words, old_words, error_words], size)
         return words 
@@ -159,6 +161,7 @@ class Db:
         ])
         return list(words)
     
+
     def get_today_start_timestamp_sec(self):
         """Return the starting timestmap in sec for today."""
         day_sec = int(floor(time.time()/(3600*24)-1)*(3600*24) + (3600*7))
@@ -166,29 +169,4 @@ class Db:
 
 
 if __name__ == '__main__':
-    db = Db(db_name='testdb')
-    db.reset()
-    db.insert_note({'note': 'bar', 'word': 'bar'})
-    print(db.get_word('bar'))
-    db.insert_note({'note': 'fred', 'word': 'fred'})
-    db.insert_note({'note': 'foo', 'word': 'foo'})
-    db.insert_note({'note': 'poo', 'word': 'poo'})
-    db.insert_note({'note': 'goo', 'word': 'goo'})
-    print("create session.")
-    session_id = db.create_session(2)
-    session = db.get_session(session_id)
-    print(session)
-    print("update session.")
-    session['status'] = 'completed'
-    session['completedTime'] = (int(time.time() - 3600 * 24))*1000
-    db.update_session(session)
-    print(db.get_word('bar'))
-    print(db.get_word('get_today_start_timestamp_sec'))
-    print(db.get_word('poo'))
-    print(db.get_word('goo'))
-    print(db.get_word('fred'))
-    print("select new words (size=1)")
-    print(db.select_new_words(1))
-    print(db.get_session(session_id))
-    print("select old words.")
-    print(len(db.select_old_words(-1, 0)))
+    pass
