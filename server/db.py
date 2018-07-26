@@ -49,7 +49,7 @@ class Db:
                 word['notes'] = []
             self.words.delete_one({'word': note['word']})
         word['notes'].append(note)
-        self.words.insert(word)
+        self.words.insert_one(word)
 
     
     def create_session(self, size=1):
@@ -57,7 +57,7 @@ class Db:
         session['session_id'] = uuid.uuid1().hex 
         session['words'] = self.select_words(size)
         session['completedTime'] = 0
-        self.sessions.insert(session)
+        self.sessions.insert_one(session)
         return session['session_id']
         
 
@@ -75,7 +75,7 @@ class Db:
             del x['_id']
         for word in session['words']:
             self.update_word(word['word'], errors=word['errors'], last_review_time=session['completedTime'])
-        self.sessions.insert(session)
+        self.sessions.insert_one(session)
         
 
     def update_word(self, word, errors, last_review_time):
