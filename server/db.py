@@ -38,6 +38,7 @@ class Db:
             word['notes'] = []
             word['errors'] = 0
             word["last_review_time"] = 0 
+            word["last_errors"] = 0 
             word['num_reviews'] = 0 
         else:
             if word['notes'] == None:
@@ -78,6 +79,7 @@ class Db:
         # Clear new_word flag. 
         w['new_word'] = False 
         w['errors'] += errors
+        w['last_errors'] = errors
         w["last_review_time"] = last_review_time
         w['num_reviews'] += 1 
         self.words.update_one({'word': word}, {"$set": w}, upsert=False)
@@ -86,7 +88,7 @@ class Db:
     def select_words(self, size=50):
         new_words = self.select_new_words(size)
         old_words = self.select_old_words(-1, 0, size) 
-        error_words = self.select_error_words()
+        error_words = self.select_error_words(-3, -1, size)
         words = self.merge([new_words, old_words, error_words], size)
         return words 
 
@@ -124,23 +126,25 @@ class Db:
         return list(words)
 
 
-    def select_error_words(self, size=20):
-        return []
-
-
-    def get_today_start_timestamp_sec(self):
-        """Return the starting timestmap in sec for today."""
-        day_sec = int(floor(time.time()/(3600*24)-1)*(3600*24) + (3600*7))
-        return day_sec
-
-
-    # -1, 0
-    # -3, -1
-    # -7, -3
+    def select_error_words(self, start, end, size=20):
+        """Return recent error words."""
+        start_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + start * DAYS_MILLI_SECS
+        end_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + end * DAYS_MILLI_SECS
+        words = self.words.aggregate([
+            {
+                '$match': {
+                    # 'last_review_time': {'$gt': start_timestamp_ms, '$lt': end_timestamp_ms},
+                    'last_errors': {'$gt': 0},
+                }
+            },
+            {'$sample': {'size': size}},
+        ])
+        return list(words)
+ 
+    
     def select_old_words(self, start, end, size=20):
         start_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + start * DAYS_MILLI_SECS
         end_timestamp_ms = self.get_today_start_timestamp_sec() * 1000  + end * DAYS_MILLI_SECS
-        print("start_timestamp_ms:", start_timestamp_ms, "end_timestamp_ms:", end_timestamp_ms)
         words = self.words.aggregate([
             {
                 '$match': {
@@ -151,6 +155,11 @@ class Db:
         ])
         return list(words)
     
+    def get_today_start_timestamp_sec(self):
+        """Return the starting timestmap in sec for today."""
+        day_sec = int(floor(time.time()/(3600*24)-1)*(3600*24) + (3600*7))
+        return day_sec
+
 
 if __name__ == '__main__':
     db = Db(db_name='testdb')
