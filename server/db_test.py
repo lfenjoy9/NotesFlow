@@ -79,10 +79,14 @@ class TestStringMethods(unittest.TestCase):
         session_id = self.db.create_session(2)
         session = self.db.get_session(session_id)
         words_of_session = list(map(lambda word: word['word'], session['words']))
+        words_of_session.sort()
+        self.assertEqual(len(words_of_session), 2)
         session['status'] = 'completed'
         session['completedTime'] = (int(time.time() - 3600 * 24))*1000
         self.db.update_session(session)
         old_words =  list(map(lambda word: word['word'], self.db.select_old_words(-1, 0)))
+        old_words.sort()
+        self.assertEqual(len(old_words), 2)
         self.assertListEqual(words_of_session, old_words)
 
 
