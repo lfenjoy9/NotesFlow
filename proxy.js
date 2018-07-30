@@ -1,10 +1,15 @@
-// Handle reqeust from the page.
+// Handle the reqeust from the content page.
 chrome.extension.onMessage.addListener(
     function(request, sender, sendResponse) {
-        if (request.method == "export") {
-            exportNotes();
-        } else if (request.method == "add") {
+        if (request.method == "addNote") {
             addNote(request.noteInfo);
         }
     }
 );
+
+function addNote(noteInfo) {
+    var timestamp = new Date().getTime();
+    noteInfo["timestamp"] = timestamp;
+    // Lookup the word and post the note to server.
+    lookupWord(noteInfo, postNoteInfoToNotesServer);
+}

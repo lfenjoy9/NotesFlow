@@ -31,10 +31,10 @@ function postNoteInfoToNotesServer(noteInfo) {
         data: data,
         dataType : 'json',
         success: function(response) {
-            console.log(response);
+            console.log('success.', 'response:', response);
         },
         error: function(result) {
-            console.log(result)
+            console.log('error.', 'result:', result);
         }
     });
 }

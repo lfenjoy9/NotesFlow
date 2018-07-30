@@ -1,6 +1,6 @@
 {
   "name": "NoteFlow",
-  "version": "0.12",
+  "version": "0.13",
   "description": "Adds the current selection to NoteFlow server.",
   "permissions": [
     "contextMenus",
@@ -9,10 +9,7 @@
   
   "background": {
     "scripts": [
-      "keycodes.js",
-      "tabs.js",
       "proxy.js",
-      "db.js",
       "jquery.min.js",
       "background.js",
       "webster_api_client.js",
@@ -37,9 +34,7 @@
       "all_frames": true,
       "js": [
         "content_script.js",
-        "db.js",
-        "jquery.min.js",
-        "keycodes.js"
+        "jquery.min.js"
       ]
     }
   ],

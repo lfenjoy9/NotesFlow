@@ -1,4 +1,4 @@
-// lookup the word and return entry word and wave file
+// Lookup the word and return the entry word and wave file.
 function lookupWord(noteinfo, fn) {
     noteinfo["term"] = "";
     noteinfo["sound"] = "";
@@ -15,10 +15,8 @@ function lookupWord(noteinfo, fn) {
         url: url,
         dataType: "xml",
         success: function(data) {
-            console.log(data);
             var entryIdHasSound;
             var wav;
-            console.log(data);
             var entry_list = $(data).find("entry_list")
             var entries = entry_list.find("entry")
             if (entries.length === 0) {
@@ -41,10 +39,9 @@ function lookupWord(noteinfo, fn) {
             });
             if (entryIdHasSound) {
                 var entryWord = entryIdHasSound.replace(/[0-9]|\[|\]/g, "");
-                console.log(entryWord + "," + wav);                
                 noteinfo["term"] = entryWord;
                 noteinfo["sound"] = wav;
-                playSound(wav);
+                playWordSound(wav);
             } else {
                 // TODO: Get the word of the first entry.
             }
@@ -53,7 +50,7 @@ function lookupWord(noteinfo, fn) {
     });
 }
 
-function playSound(wavFilename) {
+function playWordSound(wavFilename) {
     var url = "http://media.merriam-webster.com/soundc11/";
     url += wavFilename[0] + "/" + wavFilename;
     var audio = new Audio(url);
