@@ -4,6 +4,8 @@
 // - offset 
 // - url
 
+var lastNote = '';
+
 function isSpaceCharacter(c) {
   return c == ' ' || c == '\n' || c == '\t';
 }
@@ -48,7 +50,12 @@ function addNote() {
   } else {
     noteInfo = getSelectedNoteInfo()
   }
-
+  if (noteInfo.note == lastNote) {
+    // TODO: Display warn on the page.
+    console.warn("Skip the duplicate note,", 'note:', noteInfo.note);
+    return;
+  }
+  lastNote = noteInfo.note;
   console.log('addNote', 'noteInfo:', noteInfo);
   chrome.extension.sendMessage({method: "addNote", noteInfo: noteInfo});
 }
