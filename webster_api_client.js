@@ -1,10 +1,10 @@
 // Lookup the word and return the entry word and wave file.
-function lookupWord(noteinfo, fn) {
+function lookupWord(noteinfo, fnOnSuccess, fnOnError) {
     noteinfo["term"] = "";
     noteinfo["sound"] = "";
     if (noteinfo.note.split(" ").length > 1) {
-        // Contains multiple words.
-        fn(noteinfo);
+        // Note contains more than one words.
+        fnOnError("MultipleWords", noteinfo);
         return;
     }
 
@@ -20,8 +20,8 @@ function lookupWord(noteinfo, fn) {
             var entry_list = $(data).find("entry_list")
             var entries = entry_list.find("entry")
             if (entries.length === 0) {
-                // Not found
-                fn(noteinfo);
+                // Not found.
+                fnOnError("NotFound", noteinfo);
                 return;
             }
             entries.each(function() {
@@ -45,7 +45,7 @@ function lookupWord(noteinfo, fn) {
             } else {
                 // TODO: Get the word of the first entry.
             }
-            fn(noteinfo);
+            fnOnSuccess(noteinfo);
         },
     });
 }
