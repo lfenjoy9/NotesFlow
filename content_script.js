@@ -55,12 +55,18 @@ function addNote() {
 
 function onExtensionMessage(request) {
   if (request['addNote'] != undefined) {
-    console.log('request', request);
+    console.log('addNote', request);
     if (!document.hasFocus()) {
       console.log('Document doesn\'t have focus');
       return;
     }
     addNote();
+  } else if(request['notifyNoteStatus'] != undefined) {
+    console.log('notifyNoteStatus', request);
+    if (request['error'] != undefined) {
+      // TODO: Display error on the page.
+      alert('error:' + request.error);
+    }
   }
 }
 
